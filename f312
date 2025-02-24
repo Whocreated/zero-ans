@@ -1,34 +1,20 @@
-#include<iostream>
-#include<vector>
-#include<sstream>
-#include<algorithm>
-#include<math.h>
+#include <iostream>
 using namespace std;
-int A, B, C;
-int f(int x) {
-    return A * x * x + B * x + C;
-}
+ 
 int main() {
-    int a[3], b[3];
-    int n;
-    for (int i = 0; i < 3; i++)cin >> a[i];
-    for (int i = 0; i < 3; i++)cin >> b[i];
+    int A1, B1, C1, A2, B2, C2, n;
+    cin >> A1 >> B1 >> C1;
+    cin >> A2 >> B2 >> C2;
     cin >> n;
-    A = b[0] + a[0] ;
-    B = b[1] - a[1] -2*n*a[0];
-    C = b[2] + a[2]+n*n*a[0]+n*a[1];
-    int d = B * B - 4 * A * C;
-    vector<int> v={0,n};
-    if (d == 0)if (A * B >= 0)v.push_back(-B / (2 * A));
-    else if (d > 0) {
-        int tmp1 = (-B + sqrt(d)) /(2 * A);
-        if (tmp1 > 0)v.push_back(tmp1);
-        int tmp2 = (-B - sqrt(d)) / (2 * A);
-        if (tmp2 > 0)v.push_back(tmp2);
+    //答案可能為負值
+    int mx = -1e9;
+    //每個員工皆需分配到其中一個工廠，但工廠可能沒有員工
+    for (int i = 0; i <= n; i++) {
+        int temp = A1 * i * i + B1 * i + C1;
+        int j = n - i;
+        temp += A2 * j * j + B2 * j + C2;
+        mx = max(mx, temp);
     }
-    vector<int> ans;
-    for (int i = 0; i < v.size(); i++) {
-        ans.push_back(f(v[i]));
-    }
-    cout << *max_element(ans.begin(), ans.end())<<"\n";
+    cout << mx << "\n";
+    return 0;
 }
