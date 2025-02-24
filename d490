@@ -1,0 +1,17 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int a, b; // 宣告兩個整數變數a, b
+    cin >> a >> b; // 從標準輸入讀取a, b的值
+    int sum = 0; // 宣告一個整數變數sum，用來存放偶數的和，初始值為0
+    for (int i = a; i <= b; i++) // 用一個for迴圈遍歷a到b之間的所有數字，用i來表示當前的數字
+    {
+        if (i % 2 == 0) // 用一個if判斷來判斷i是否為偶數，如果i除以2的餘數為0，就表示i是偶數
+        {
+            sum += i; // 如果i是偶數，就把i加到sum上
+        }
+    }
+    cout << sum << endl; // 輸出sum的值到標準輸出
+    return 0; // 程式結束，回傳0
+}
