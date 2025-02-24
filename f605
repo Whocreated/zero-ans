@@ -1,0 +1,22 @@
+#include<bits/stdc++.h>
+using namespace std;
+    int main(){
+    int n;
+    int d;
+    int rec[3]={0};
+    int tol=0;
+    int cou=0;
+    cin>>n;
+    cin>>d;
+    for (int a=0;a<n;a++){
+        for (int b=0;b<3;b++){
+            cin>>rec[b];
+            }
+            sort(rec,rec+3);
+            if (rec[2]-rec[0]>=d){
+                cou+=1;
+                tol+=(rec[0]+rec[1]+rec[2])/3;
+        }
+    }
+    cout<<cou<<' '<<tol;
+}
