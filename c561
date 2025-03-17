@@ -1,0 +1,26 @@
+#include<iostream>
+using namespace std;
+int main()
+{
+ios::sync_with_stdio(0);
+cin.tie(0);
+cout.tie(0);
+int t;
+cin>>t;
+int max=-1;
+for(int i=0;i<t;i++)
+{
+int num=0;
+int a;
+//scanf("%d",&a);
+cin>>a;
+while(a>0)
+{
+num=num*10+a%10;
+a/=10;
+}
+max=(num>max)?num:max;
+}
+//printf("%d\n",max);
+cout<<max<<endl;
+}
