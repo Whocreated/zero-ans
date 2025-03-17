@@ -1,0 +1,36 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int m,n,k,r,c,mp[105][105]=0;
+	cin>>m>>n>>k>>r>>c;
+	memset (mp, -1, sizeof(mp));
+	
+	for(int i=1;i<=m;i++){
+	    for(int j=1;j<=n;j++){
+	        cin >> mp[i][j];
+	    }
+	}
+
+    r++;
+    c++;
+    int score=0, gem=0,dir=0;
+    int dr[4]={0,1,0,-1}, dc[4]={1,0,-1,0};
+    while(mp[r][c]!=0){
+        score+=mp[r][c];
+        mp[r][c]--;
+        gem++;
+        
+        if(score%k==0){
+            dir=(dir+1)%4;
+        }
+        
+        while (mp[r+dr[dir]][c+dc[dir]]==-1){
+            dir=(dir+1)%4;
+        }
+        
+        r=r+dr[dir]
+        c=c+dc[dir]
+    }
+    cout<<gem<<endl;
+}
