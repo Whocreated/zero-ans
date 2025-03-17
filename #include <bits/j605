@@ -1,0 +1,22 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int k, mxt, mx, cnt, score;
+ 
+int main(){
+    cin >> k;
+    cin >> mxt >> mx;
+    for (int i = 2, t, s; i <= k; i++){
+        cin >> t >> s;
+        if (s == -1) cnt++;
+        else{
+            if (s > mx){
+                mx = s;
+                mxt = t;
+            }
+        }
+    }
+    score = mx - k - cnt*2;
+    if (score < 0) score = 0;
+    cout << score << " " << mxt << "\n";
+}
