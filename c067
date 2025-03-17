@@ -1,0 +1,24 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	int n;
+	int id = 1;
+	while(cin >> n && n) {
+		cout << "Set #" << id++ << "\n";
+		vector<int> a(n);
+		for(int i = 0; i < n; i++) {
+			cin >> a[i];
+		}
+		int average = accumulate(a.begin(), a.end(), 0) / n;
+		int ans = 0;
+		for(int i = 0; i < n; i++) {
+			ans += abs(average - a[i]);
+		}
+		ans /= 2;
+		cout << "The minimum number of moves is " << ans << ".\n";
+	}
+	return 0;
+}
