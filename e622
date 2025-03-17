@@ -1,0 +1,46 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    int n;
+    int sa;
+    int cp;
+    int iv;
+    int co=0;
+    int poke[50]={0};
+    int leveltimes;
+    int max1=0;
+    int comax=1;
+    cin>>n;
+    cin>>sa;
+    leveltimes=sa/1000;
+    for (int a=0;a<n;a++)
+        {
+            cin>>cp;
+            cin>>iv;
+            if (iv>=0&&iv<=29)
+            {
+                cp+=leveltimes*10;
+                poke[co]=cp;
+            }
+            if (iv>=30&&iv<=39)
+            {
+                cp+=leveltimes*50;
+                poke[co]=cp;
+            }
+            if (iv>=40&&iv<=45)
+            {
+                cp+=leveltimes*100;
+                poke[co]=cp;
+            }
+              co+=1;
+        }
+        for (int h=0;h<n;h++)
+        {
+            if (poke[h]>max1)
+            {
+                max1=poke[h];
+                comax=h+1;
+            }
+        }
+        cout<<comax<<' '<<max1;
+}
