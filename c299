@@ -1,0 +1,22 @@
+#include <iostream>
+#include <map>
+#include <string>
+#include <algorithm>
+using namespace std;
+ 
+int main(int argc, const char * argv[]) {
+    int n;
+    while (cin >> n){
+        int a[n];
+        for (int i = 0; i < n; i++){
+            cin >> a[i];
+        }
+        sort(a, a+n);
+        cout << a[0] << ' ' << a[n-1] << ' ';
+        if (n-1 == a[n-1]-a[0]){
+            cout << "yes" << endl;
+        }else{
+            cout << "no" << endl;
+        }
+    }
+}
