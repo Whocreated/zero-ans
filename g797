@@ -1,0 +1,36 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n,m;
+	cin>>n>>m;
+	int h[n+1]={},f[n/2+1]={},b[n/2+1]={};
+	for (int i=1;i<=n;i++){
+	    cin>>h[i];
+	}
+	for (int i=0;i<m;i++){
+	    for (int j=1;j<n/2+1;j++){
+	        f[j]=h[j];
+	    }
+	    int o=1;
+	    for (int j=n/2+1;j<=n;j++){
+	        b[o]=h[j];
+	        o++;
+	    }
+	    int j=1,k=1;
+	    for(int l=1;l<=n;l++){
+	        if (l%2==1){
+	            h[l]=f[j];
+	            j++;
+	        }
+	        if (l%2==0){
+	            h[l]=b[k];
+	            k++;
+	        }
+	    }
+	}
+	for(int i=1;i<=n;i++){
+	    cout<<h[i]<<" ";
+	}
+	cout<<endl;
+}
