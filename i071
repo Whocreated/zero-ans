@@ -1,0 +1,31 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+
+main(){
+    ios::sync_with_stdio(0);cin.tie(0);
+    int num,location,height,lefthighest,righthighest;
+    while (cin>>num){
+        int sum=0;
+        int building[1000];
+        cin>>location;
+        for(int i=0;i<num;i++){
+            cin>>building[i];
+        }
+        lefthighest=righthighest=building[location-1];
+        for(int l=location-2;l>=0;l--){
+            if(building[l]>lefthighest){
+                sum++;
+                lefthighest=building[l];
+            }
+        }
+        for (int r=location;r<=num-1;r++){
+            if(building[r]>righthighest){
+                sum++;
+                righthighest=building[r];
+            }
+        }
+        cout<<sum<<endl;
+    }
+    return 0;
+}
