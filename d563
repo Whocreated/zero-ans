@@ -1,0 +1,33 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+    int n, sum = 0;
+    cin >> n;
+    int list[n],a=0;
+    for (int i = 0; i < n; i++) {
+        cin >> list[i];
+        a+=list[i];
+    }
+    int f=list[0], b=list[n-1];
+    int i=1,j=1;
+    while (i!=n+1){
+        if (f==b){
+            sum+=1;
+            f+=list[i];
+            i++;
+        }
+        else{
+            if (f>b){
+                b+=list[n-j-1];
+                j++;
+            }
+            else{
+                f+=list[i];
+                i++;
+            }
+        }
+    }
+    cout << sum << endl;
+}
