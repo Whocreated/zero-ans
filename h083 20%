@@ -1,0 +1,30 @@
+#include <iostream>  //數位占卜
+#include <cstring>
+using namespace std;
+
+int main(){
+    int m,i,j,k,time=0;
+    cin >> m;
+    string sen[m],test,cut1,cut2;
+    for(i=0;i<m;i++){
+        cin >> sen[i];
+    }
+    for(i=0;i<m-1;i++){
+        for(j=i+1;j<m;j++){
+            cut1 = ' ';
+            cut2 = ' ';
+            test = sen[i]+sen[j];
+            for(k=0;k<test.length()/2;k++){
+                cut1 += test[k];
+            }
+            for(k=test.length()/2;k<test.length();k++){
+                cut2 += test[k];
+            }
+            if(cut1==cut2){
+                time += 1;
+            }
+        }
+    }
+    cout << time;
+    return 0;
+}
