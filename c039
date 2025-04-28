@@ -1,0 +1,43 @@
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    int n, m;
+    while (cin >> n >> m)
+    {
+        // 先輸出免得被換掉
+        printf("%d %d ",n,m);
+        // n要比較小
+        if (n>m)
+        {
+            swap(n,m);
+        }
+        // 嘗試n到m的所有數字
+        int c = 1,max_c=0;
+        for (int i = n; i < m+1; i++)
+        {
+            int a=i,c=1;
+            while (a != 1)
+            {
+                if (a % 2 == 0)
+                {
+                    a /= 2;
+                }
+                else
+                {
+                    a = 3 * a + 1;
+                }
+                c++;
+            }
+            if (c>max_c)
+            {
+                max_c=c;
+            }
+            
+        }
+        // out
+        printf("%d\n", max_c);
+    }
+}
