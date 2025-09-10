@@ -1,0 +1,12 @@
+#include<iostream>
+using namespace std;
+int main(){
+    int a,b;//宣告
+    cin>>a>>b;//輸入
+    int c=0;//宣告
+        for(int i=a;i<b+1;i++){//宣告變數i，如果i<b+1，i+1，++表加1
+            if(i%2==0){//用餘數判斷奇偶
+            c=c+i;
+            }}
+        cout<<c;
+}
