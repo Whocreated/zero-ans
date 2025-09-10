@@ -1,0 +1,22 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int a, b, n, e, f = 0;
+    cin >> n;  // 讀取測試案例數量
+    for (int i = 0; i < n; i++) {
+        cin >> a >> b;
+        e = 0;
+
+        while (a <= b) {  // 當 a 還沒有超過 b 時繼續執行
+            if (a % 2 == 1) {
+                e = e + a;
+            }
+            a = a + 1;
+        }
+
+        f = f + 1;
+        cout << "Case " << f << ": " << e << endl;
+    }
+    return 0;
+}
