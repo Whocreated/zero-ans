@@ -1,0 +1,11 @@
+n=int(input())
+h=input().split()
+w=input().split()
+s,sh,sw=int(h[0])*int(w[0]),int(h[0]),int(w[0])
+for i in range(1,n):
+    if s>int(h[i])*int(w[i]):
+        s=int(h[i])*int(w[i])
+        sh,sw=int(h[i]),int(w[i])
+print(sh,sw)
+
+ 
