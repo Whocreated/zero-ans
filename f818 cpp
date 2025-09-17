@@ -1,0 +1,28 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main()
+{
+    int a;
+    cin>>a;
+    long long int mim=10000000,hi=0,wei=0;
+    int high[2005];
+    int weight[2005];
+    for(int b=0;b<a;b++)
+    {
+        cin>>high[b];
+    }
+    for(int c=0;c<a;c++)
+    {
+        cin>>weight[c];
+    }
+    for(int d=0;d<a;d++)
+    {
+        if(high[d]*weight[d]<mim)
+        {
+            mim=high[d]*weight[d];
+            hi=high[d];
+            wei=weight[d];
+        }
+    }
+    cout<<hi<<' '<<wei;
+}
