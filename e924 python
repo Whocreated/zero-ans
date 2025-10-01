@@ -1,0 +1,16 @@
+for i in range(int(input())):
+    s =[]
+    for j in input():
+        if j in '{(<[':
+            s+=[j]
+        elif s and s[-1] == '([<{'[')]>}'.find(j)]:
+            s.pop()
+        else:
+            break
+
+    else:
+        if not s:
+            print('Y')
+            continue
+
+    print('N')
