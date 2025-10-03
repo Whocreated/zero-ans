@@ -1,0 +1,66 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+
+
+
+
+
+
+    stack<char> oper;
+    stack<long> num; // 開兩個stack，運算子一堆、數字一堆
+    long n, a, b; // 因為他給的數字對int會溢位所以開long
+    char k, p; 
+    bool last_is_num=0; 
+    cin >> n;
+
+
+
+    for (int i=0; i<n; i++) {
+        do {
+            cin >> k;
+            if (k=='('||k=='+'||k=='-'||k=='*'||k=='/') {
+                oper.push(k);
+                last_is_num=0;
+            }
+
+
+            else if (k == ')') {
+                p = oper.top();
+                oper.pop(); 
+                oper.pop(); // 多pop一次把上括號pop掉
+                b = num.top();
+                num.pop();
+                a = num.top();
+                num.pop();
+                if (p == '+') num.push(a+b);
+                if (p == '-') num.push(a-b);
+                if (p == '*') num.push(a*b);
+                if (p == '/') num.push(a/b);
+                
+                last_is_num=0;
+            }
+
+
+            else {
+                if (last_is_num == 1) { //如果他給的不是個位數字，stack會堆兩次
+                    a = num.top()*10 + k-'0';
+                    num.pop();
+                    num.push(a);
+                }
+                else {
+                    num.push(k-'0');
+                }
+                last_is_num=1;
+            }
+
+
+            
+        } while ( !oper.empty() );
+        cout << num.top() << endl;
+        num.pop();
+    }
+
+
+}
