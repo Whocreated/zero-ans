@@ -1,0 +1,66 @@
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Scanner;
+
+public class VectorQueueToQueue {
+
+    public static void main(String[] args) {
+        // Scanner to read input from the console
+        Scanner scanner = new Scanner(System.in);
+        
+        // Use an ArrayDeque for an efficient Queue implementation (FIFO)
+        Queue<Integer> queue = new ArrayDeque<>();
+        
+        // n stores the number of operations for the current test case.
+        int n;
+        
+        // Outer loop: Continues as long as there is an integer N to read for the number of operations.
+        // This is equivalent to C++'s 'while (cin >> n)'.
+        while (scanner.hasNextInt()) {
+            n = scanner.nextInt();
+            
+            int i = 0;
+            // Inner loop: Executes exactly 'n' times (the operations).
+            // This is equivalent to C++'s 'do...while (i < n)'.
+            while (i < n) {
+                if (!scanner.hasNextInt()) break; // Check if there is more input
+                int input = scanner.nextInt(); // Read the operation type (1, 2, or 3)
+                
+                switch (input) {
+                    case 1: // Add element (Enqueue)
+                        if (!scanner.hasNextInt()) break; // Check for the element value
+                        int x = scanner.nextInt();
+                        queue.offer(x); // offer() is the standard Queue method to add to the back
+                        break;
+
+                    case 2: // Output the first element (Peek)
+                        // If queue is empty, print -1; otherwise, print the front element
+                        if (queue.isEmpty()) {
+                            System.out.println(-1);
+                        } else {
+                            System.out.println(queue.peek()); // peek() gets the front element without removing it
+                        }
+                        break;
+
+                    case 3: // Remove the first element (Dequeue)
+                        // If queue isn't empty, remove the front element
+                        if (!queue.isEmpty()) {
+                            queue.poll(); // poll() removes and returns the front element
+                        }
+                        // Note: The C++ 'case 3' was an *incorrect* implementation of dequeue for a vector
+                        // (it removed the *last* element with pop_back() and then tried to shift elements).
+                        // The Java code correctly removes the *first* element using poll(), which is O(1) in ArrayDeque.
+                        break;
+                }
+                i++;
+            }
+            
+            // The C++ code doesn't clear the queue between test cases, 
+            // so we keep the Java queue as is to emulate the original logic.
+            // If the intent was to clear it, you would add 'queue.clear();' here.
+        }
+        
+        // Close the scanner
+        scanner.close();
+    }
+}
