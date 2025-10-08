@@ -19,6 +19,7 @@ int main()
                          cin >> x;
                          queue.push_back(x);
                          break;
+
                     case 2: // Output the first element
                          if (queue.empty()) cout << -1 << endl;
                          else cout << queue[0] << endl;
@@ -32,14 +33,33 @@ int main()
                                    queue[w] = queue[w+1];
                          }
                          break;
-
                }
-
                i++; 
-
           } while (i < n);   
-
      }   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
      return 0;
 
