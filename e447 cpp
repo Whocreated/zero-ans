@@ -1,0 +1,46 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main()
+
+{
+     int n, input, x, i = 0;
+
+     vector<int> queue;
+
+     while (cin >> n)
+     {
+          do
+          {
+               cin >> input;
+               switch (input)
+               {
+                    case 1: // Add element after the queue
+                         cin >> x;
+                         queue.push_back(x);
+                         break;
+                    case 2: // Output the first element
+                         if (queue.empty()) cout << -1 << endl;
+                         else cout << queue[0] << endl;
+                         break;
+
+                    case 3: // Remove the first element
+                         if (!queue.empty()) // If queue ISN'T empty, remove the first element
+                         {
+                              queue.pop_back();
+                              for (int w = 0 ; w < queue.size() ; w++)
+                                   queue[w] = queue[w+1];
+                         }
+                         break;
+
+               }
+
+               i++; 
+
+          } while (i < n);   
+
+     }   
+
+     return 0;
+
+ }
