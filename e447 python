@@ -1,0 +1,13 @@
+from collections import deque
+
+n = int(input())
+arr = deque()
+for _ in range(n):
+    line = list(map(int, input().split()))
+    if len(line) == 1:
+        if line[0] == 2:
+            if arr: print(arr[0])
+            else: print(-1)
+        elif line[0] == 3 and arr: arr.popleft()
+    else:
+        arr.append(line[1])
