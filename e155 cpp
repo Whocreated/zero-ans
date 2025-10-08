@@ -1,0 +1,22 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main(){
+    int n;
+    while(cin >> n &&  n ){
+        queue<int> Q;
+        int card[100]={0},end=0;
+
+        for(int i=1;i<=n;i++) Q.push(i);
+        cout<<"Discarded cards: ";
+        while(Q.size()>1){
+            cout<<Q.front();
+            if(Q.size()!=2)cout<<", ";
+            card[end++]=Q.front();
+            Q.pop();
+            Q.push(Q.front());
+            Q.pop();
+        }
+        cout<<"\nRemaining card: "<<Q.front()<<'\n';
+    }
+}
