@@ -1,0 +1,59 @@
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+import java.util.StringJoiner;
+
+public class CardShuffle {
+
+    public static void main(String[] args) {
+        // Scanner to read input from the console
+        Scanner scanner = new Scanner(System.in);
+        
+        // The main loop that runs until the input is 0
+        while (true) {
+            // Prompt user for input and read the number n
+            // System.out.print("Enter number of cards (0 to exit): ");
+            int n = scanner.nextInt();
+            
+            // Exit condition
+            if (n == 0) {
+                break;
+            }
+            
+            // A LinkedList is used as a Queue for the deck of cards.
+            // Queue operations (offer, poll) are O(1) time complexity.
+            Queue<Integer> deck = new LinkedList<>();
+            
+            // A StringJoiner is used to efficiently build the comma-separated string 
+            // of discarded cards.
+            StringJoiner discardedCards = new StringJoiner(", ");
+            
+            // 1. Initialize the deck with cards 1 to n
+            for (int i = 1; i <= n; i++) {
+                deck.offer(i);
+            }
+            
+            // 2. Perform the discard and move operations until only one card is left
+            // This loop runs n-1 times
+            while (deck.size() > 1) {
+                // Discard the top card (pop(0) in Python, poll() in Java)
+                int discarded = deck.poll();
+                discardedCards.add(String.valueOf(discarded)); // Add to the list of discarded cards
+                
+                // Move the next top card to the bottom (pop(0) and append() in Python, poll() and offer() in Java)
+                int nextCard = deck.poll();
+                deck.offer(nextCard); 
+            }
+            
+            // The remaining card is the only element left in the queue
+            int remainingCard = deck.poll();
+            
+            // 3. Print the results
+            System.out.println("Discarded cards: " + discardedCards.toString());
+            System.out.println("Remaining card: " + remainingCard);
+        }
+        
+        // Close the scanner
+        scanner.close();
+    }
+}
