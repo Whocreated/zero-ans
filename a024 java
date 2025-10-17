@@ -1,0 +1,29 @@
+import java.util.Scanner;
+
+public class GCDCalculator {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        while (scanner.hasNextInt()) {
+            int x = scanner.nextInt();
+            
+            if (!scanner.hasNextInt()) {
+                break;
+            }
+            int y = scanner.nextInt();
+
+            while (x % y != 0) {
+                int k = x % y;
+                
+                x = y;
+                
+                y = k;
+            }
+            
+            System.out.println(y);
+        }
+
+        scanner.close();
+    }
+}
