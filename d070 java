@@ -1,0 +1,24 @@
+import java.util.Scanner;
+
+public class ContinuousLeapYearChecker {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        while (scanner.hasNextInt()) {
+            int a = scanner.nextInt();
+            
+            if (a == 0) {
+                break;
+            }
+
+            if (a % 400 == 0 || (a % 4 == 0 && a % 100 != 0)) {
+                System.out.println("a leap year");
+            } else {
+                System.out.println("a normal year");
+            }
+        }
+
+        scanner.close();
+    }
+}
