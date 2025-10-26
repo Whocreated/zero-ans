@@ -1,0 +1,17 @@
+a,b,c = map(int, input().split(' '))    # 拆分輸入的字串，轉換成數字提供給變數 a、b、c
+if a !=0:     # 如果 a 不等於 0
+    r = b**2 - 4*a*c    # 計算開根號內的數值
+    if r>0:             # 如果開根號內的數值大於 0
+        x1 = int((b*-1 + r**0.5)/(2*a))    # 套用公式求出 x1
+        x2 = int((b*-1 - r**0.5)/(2*a))    # 套用公式求出 x2
+        if x1>x2:                          # 根據題目輸出結果
+            print(f'Two different roots x1={x1} , x2={x2}')
+        else:
+            print(f'Two different roots x1={x2} , x2={x1}')
+    elif r == 0:
+        x = int((b*-1 + r**0.5)/(2*a))
+        print(f'Two same roots x={x}')     # 根據題目輸出結果
+    else:     # 如果開根號內的數值小於 0
+        print('No real root')
+else:       # 如果 a 等於 0
+    print('No real root')
