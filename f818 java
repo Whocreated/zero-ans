@@ -1,0 +1,40 @@
+import java.util.Scanner;
+
+public class MinimumProductFinder {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        int a = scanner.nextInt(); 
+
+        int[] high = new int[a];
+        int[] weight = new int[a];
+
+        for (int b = 0; b < a; b++) {
+            high[b] = scanner.nextInt(); 
+        }
+
+        for (int c = 0; c < a; c++) {
+            weight[c] = scanner.nextInt(); 
+        }
+
+        long minProduct = Long.MAX_VALUE;
+        
+        int bestHigh = 0; 
+        int bestWeight = 0;
+
+        for (int d = 0; d < a; d++) {
+            long currentProduct = (long)high[d] * weight[d]; 
+
+            if (currentProduct < minProduct) {
+                minProduct = currentProduct;
+                bestHigh = high[d];
+                bestWeight = weight[d];
+            }
+        }
+
+        System.out.println(bestHigh + " " + bestWeight);
+
+        scanner.close();
+    }
+}
