@@ -1,0 +1,12 @@
+a = int(input())          # 將輸入的文字轉成數字
+for i in range(a):        # 有幾組就重複幾次
+    n = input()           # 每次輸入的數列
+    b = [int(j) for j in n.split(' ')]    # 將輸入的數列從文字轉換成數字
+    if (b[1]-b[0]) == (b[3]-b[2]):        # 判斷如果是等差數列
+        print(n, end=' ')
+        print(int(b[3]+b[3]-b[2]))        # 讓輸出的結果為：原本輸入的數列加上運算的結果
+        continue                          # 跳出迴圈重來一次
+    if (b[1]/b[0]) == (b[3]/b[2]):        # 判斷如果是等比數列
+        print(n, end=' ')
+        print(int(b[3]*(b[3]/b[2])))      # 讓輸出的結果為：原本輸入的數列加上運算的結果
+        continue                          # 跳出迴圈重來一次
