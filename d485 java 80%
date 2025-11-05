@@ -1,0 +1,33 @@
+import java.util.Scanner;
+
+public class EvenCountInRange {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            while (scanner.hasNextInt()) {
+                int a = scanner.nextInt();
+                
+                if (!scanner.hasNextInt()) {
+                    break;
+                }
+                int b = scanner.nextInt();
+                
+                a = a + 2;            
+                b = b + 2;            
+                
+                int c = 1 - a % 2;  
+                
+                int d = 1 - b % 2;  
+                
+                int r = (b - a + c) / 2 + d;  
+                
+                System.out.println(r);
+            }
+        } catch (Exception e) {
+        } finally {
+            scanner.close();
+        }
+    }
+}
