@@ -1,0 +1,19 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main() { _
+    int n, ans = 0, cur;
+    cin >> n;
+    vector<pair<int, int>> v(n);
+    for (auto& i : v)
+        cin >> i.f >> i.s; // 記錄線段左端和右端
+    sort(v.begin(), v.end()); // 排序
+    cur = v.front().f; // 定位現在位置
+    for (const auto& i : v) {
+        cur = max(cur, i.f);
+        if (i.s > cur) { // 如果有線段還沒被覆蓋
+            ans += i.s - cur;
+            cur = i.s;
+        }
+    }
+    cout << ans << endl;
+}
