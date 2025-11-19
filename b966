@@ -1,0 +1,11 @@
+from sys import stdin
+n = int(stdin.readline().strip())
+f = [[int(x) for x in stdin.readline().strip().split()] for _ in range(n)] # 記錄線段左端和右端
+f.sort() # 排序
+ans = cur = 0 # 定位現在位置
+for i in f:
+    cur = max(cur, i[0])
+    if i[1] > cur: # 如果有線段還沒被覆蓋
+        ans += i[1] - cur
+        cur = i[1]
+print(ans)
