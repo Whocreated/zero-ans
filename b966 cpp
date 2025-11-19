@@ -1,19 +1,30 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
+#define F first
+#define S second
 using namespace std;
-int main() { _
-    int n, ans = 0, cur;
-    cin >> n;
-    vector<pair<int, int>> v(n);
-    for (auto& i : v)
-        cin >> i.f >> i.s; // 記錄線段左端和右端
-    sort(v.begin(), v.end()); // 排序
-    cur = v.front().f; // 定位現在位置
-    for (const auto& i : v) {
-        cur = max(cur, i.f);
-        if (i.s > cur) { // 如果有線段還沒被覆蓋
-            ans += i.s - cur;
-            cur = i.s;
+int n,ans=0;
+deque<pair<int,int>>dq;
+int main(){
+    cin>>n;
+    dq.assign(n,{});
+    for(int i=0;i<n;i++)cin>>dq[i].F>>dq[i].S;
+    sort(dq.begin(),dq.end());
+    while(dq.size()){
+        if(dq.size()==1){
+            ans+=dq[0].S-dq[0].F;
+            dq.pop_front();
+        }
+        else{
+            if(dq[0].S>=dq[1].F){
+                dq[1].F=min(dq[1].F,dq[0].F);
+                dq[1].S=max(dq[0].S,dq[1].S);
+                dq.pop_front();
+            }
+            else{
+                ans+=dq[0].S-dq[0].F;
+                dq.pop_front();
+            }
         }
     }
-    cout << ans << endl;
+    cout<<ans;
 }
