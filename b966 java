@@ -1,0 +1,59 @@
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Scanner;
+
+public class IntervalUnionLength {
+
+    static class Interval {
+        int start;
+        int end;
+
+        public Interval(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        int n = scanner.nextInt(); 
+
+        List<Interval> intervals = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            int start = scanner.nextInt();
+            int end = scanner.nextInt();
+            intervals.add(new Interval(start, end));
+        }
+        
+        scanner.close();
+
+        intervals.sort(Comparator.comparingInt(i -> i.start));
+
+        if (intervals.isEmpty()) {
+            System.out.println(0);
+            return;
+        }
+        
+        Interval currentMerged = intervals.get(0);
+        long totalLength = 0;
+
+        for (int i = 1; i < intervals.size(); i++) {
+            Interval next = intervals.get(i);
+            
+            if (currentMerged.end >= next.start) {
+                currentMerged.end = Math.max(currentMerged.end, next.end);
+            } else {
+                totalLength += (currentMerged.end - currentMerged.start);
+                
+                currentMerged = next;
+            }
+        }
+        
+        totalLength += (currentMerged.end - currentMerged.start);
+        
+        System.out.println(totalLength);
+    }
+}
