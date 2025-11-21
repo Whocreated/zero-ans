@@ -1,0 +1,17 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+    int n, f=0, m, d=0;
+    cin>>n;   
+    for(int c=0;c<n;c++){
+        cin>>m;
+        if(m>f)
+            f=m;
+        else
+            f=f;
+        
+    }
+    cout<<f<<endl;
+    return 0;
+}
