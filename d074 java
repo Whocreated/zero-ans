@@ -1,0 +1,24 @@
+import java.util.Scanner;
+
+public class MaxValueFinder {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        int n = scanner.nextInt(); 
+
+        int f = 0; 
+        
+        for (int c = 0; c < n; c++) {
+            int m = scanner.nextInt(); 
+
+            if (m > f) {
+                f = m;
+            }
+        }
+        
+        System.out.println(f);
+
+        scanner.close();
+    }
+}
