@@ -1,0 +1,31 @@
+import java.util.Scanner;
+
+public class WordCounter {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        while (scanner.hasNextLine()) {
+            String n = scanner.nextLine();
+
+            int count = 0;
+
+            for (int i = 1; i < n.length(); i++) {
+                char current = n.charAt(i);
+                char previous = n.charAt(i - 1);
+
+                if ((!Character.isLetter(current)) && Character.isLetter(previous)) {
+                    count++;
+                }
+            }
+
+            if (n.length() > 0 && Character.isLetter(n.charAt(n.length() - 1))) {
+                count++;
+            }
+
+            System.out.println(count);
+        }
+
+        scanner.close();
+    }
+}
