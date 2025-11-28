@@ -1,0 +1,12 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    string s;
+    getline(cin, s);  // 讀整行
+    for (char c : s) {
+        cout << char(c - 7);
+    }
+    cout << '\n';
+    return 0;
+}
