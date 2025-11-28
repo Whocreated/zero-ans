@@ -1,0 +1,28 @@
+import java.util.Scanner;
+
+public class CharacterShiftDecoder {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            if (scanner.hasNextLine()) {
+                String s = scanner.nextLine();
+                
+                StringBuilder result = new StringBuilder();
+                
+                for (int i = 0; i < s.length(); i++) {
+                    char c = s.charAt(i);
+                    
+                    char shiftedChar = (char) (c - 7);
+                    
+                    result.append(shiftedChar);
+                }
+                
+                System.out.println(result.toString());
+            }
+        } finally {
+            scanner.close();
+        }
+    }
+}
