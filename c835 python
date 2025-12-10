@@ -1,0 +1,74 @@
+import sys
+
+def map_n_to_coordinates():
+    # 讀取輸入 n
+    # 由於 n 是一個單獨的整數，我們使用 sys.stdin.read().strip() 來讀取
+    try:
+        # 讀取所有輸入並轉換為整數
+        n_input = sys.stdin.read().strip()
+        if not n_input:
+            # 如果沒有輸入，直接返回
+            return
+        n = int(n_input)
+    except ValueError:
+        print("輸入錯誤：請確保輸入一個有效的整數。")
+        return
+
+    # Z (Zone): 區塊編號 (1, 2, 或 3)
+    # Y (Row): 行編號
+    # X (Column): 列編號
+
+    if n <= 2500:
+        # 區塊 1 (Zone 1)
+        # 區塊大小: 100 行 x 25 列 (總容量 2500)
+        
+        Z = 1
+        # 為了使用 0-based 索引計算，先計算 n' = n - 1
+        n_prime = n - 1
+        
+        # X 軸 (Column) 計算: 寬度為 25
+        X = (n_prime % 25) + 1
+        
+        # Y 軸 (Row) 計算:
+        Y = (n_prime // 25) + 1
+        
+    elif n <= 7500:
+        # 區塊 2 (Zone 2)
+        # 區塊大小: 100 行 x 50 列 (總容量 5000: 7500 - 2500)
+        
+        Z = 2
+        # n' 從 1 開始計數，歸一化到當前區塊
+        n_prime = n - 2500
+        
+        # 為了使用 0-based 索引計算，再減 1
+        n_double_prime = n_prime - 1
+        
+        # X 軸 (Column) 計算: 寬度為 50
+        X = (n_double_prime % 50) + 1
+        
+        # Y 軸 (Row) 計算:
+        Y = (n_double_prime // 50) + 1
+        
+    else:
+        # 區塊 3 (Zone 3)
+        # 區塊大小: 寬度 25
+        
+        Z = 3
+        # n' 從 1 開始計數，歸一化到當前區塊
+        n_prime = n - 7500
+        
+        # 為了使用 0-based 索引計算，再減 1
+        n_double_prime = n_prime - 1
+        
+        # X 軸 (Column) 計算: 寬度為 25
+        X = (n_double_prime % 25) + 1
+        
+        # Y 軸 (Row) 計算:
+        Y = (n_double_prime // 25) + 1
+
+    # 輸出結果 Z Y X，並以空格分隔
+    print(f"{Z} {Y} {X}")
+
+# 執行主要函數
+if __name__ == "__main__":
+    map_n_to_coordinates()
