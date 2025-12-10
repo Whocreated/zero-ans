@@ -1,0 +1,24 @@
+n, k = map(int, input().split())
+
+# 讀取數列 A
+a = list(map(int, input().split()))
+
+# 讀取詢問的整數 x
+queries = list(map(int, input().split()))
+
+# 依次處理每個詢問
+for q in queries:
+    # 二分查找
+    left, right = 0, n - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if a[mid] == q:
+            print(mid + 1)  # 找到了，輸出對應的 i 值
+            break
+        elif a[mid] < q:
+            left = mid + 1
+        else:
+            right = mid - 1
+    else:
+        # 沒有找到，輸出 0
+        print(0)
