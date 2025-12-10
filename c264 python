@@ -1,0 +1,117 @@
+# 定義 Node 類別來存儲物品的重量和價值
+class Node:
+    def __init__(self, w, v):
+        self.w = w  # 重量 (weight)
+        self.v = v  # 價值 (value)
+    
+    # 實現 __lt__ 方法以支援 Python 的排序功能
+    # 根據 C++ 程式碼的邏輯，按重量降序排列 (越重的越先排)
+    def __lt__(self, other):
+        return self.w > other.w
+    
+    def __repr__(self):
+        return f"Node(w={self.w}, v={self.v})"
+
+def solve():
+    # 讀取 n (物品總數), t (最大允許扭矩 T), L (最大可選物品數)
+    try:
+        # 假設輸入格式為：n t L
+        # 實際應用中，可能需要根據具體輸入方式調整
+        n, t, L = map(int, input().split())
+    except EOFError:
+        return
+    except ValueError:
+        print("輸入格式錯誤，請確保輸入 n, t, L 三個整數。")
+        return
+
+    a = []
+    for _ in range(n):
+        # 讀取 w (重量), v (價值)
+        # 假設輸入格式為：w v
+        try:
+            w, v = map(int, input().split())
+            a.append(Node(w, v))
+        except EOFError:
+            break # 提前結束讀取
+        except ValueError:
+            print(f"輸入格式錯誤，跳過第 {len(a)+1} 個物品。")
+            continue
+
+    # 按照 Node 的 __lt__ 方法進行排序：按重量降序排列 (最重的在前)
+    a.sort()
+    
+    # M=2005 是最大扭矩，N=205 是最大物品數
+    # dp[i][j]: 選擇 i 個物品，總扭矩為 j 時的最大價值
+    # 初始化 DP 表格，最大物品數為 L+1 (索引從 0 到 L)，最大扭矩為 t+1 (索引從 0 到 t)
+    dp = [[0] * (t + 1) for _ in range(L + 1)]
+    
+    # 遍歷所有物品 (按照重量從重到輕的順序)
+    for item in a:
+        # w_i: 當前物品的重量, v_i: 當前物品的價值
+        w_i = item.w
+        v_i = item.v
+        
+        # 內層循環從大到小遍歷，以避免使用當前物品 (item) 兩次
+        # j: 之前已選擇的物品數量
+        # 當前物品 item 將成為第 j+1 重的物品，力矩臂為 j+1
+        
+        # 初始力矩臂 (j+1) 設為 L，對應 j = L-1
+        # jj = w_i * (j + 1)
+        jj = w_i * L
+        
+        # j 從 L-1 降到 1
+        for j in range(L - 1, 0, -1):
+            
+            # 如果 item 作為第 j+1 個物品的扭矩就已經超過最大扭矩 t，則無需繼續
+            if jj > t:
+                # 更新 jj，因為 j 減小了 1，力矩臂也減小了 1
+                jj -= w_i
+                continue
+            
+            # k: 之前 j 個物品的總扭矩
+            # 遍歷所有可能的先前扭矩 k，從最大可能值 (t - jj) 降到 0
+            for k in range(t - jj, -1, -1):
+                # 如果 dp[j][k] > 0，表示存在一個由 j 個物品組成的有效狀態
+                if dp[j][k] > 0:
+                    # 更新 dp[j+1][k + jj]
+                    # 新狀態：選擇 j+1 個物品，總扭矩 k + jj
+                    # 新價值：dp[j][k] + v_i
+                    dp[j + 1][k + jj] = max(dp[j + 1][k + jj], dp[j][k] + v_i)
+            
+            # 更新 jj，因為 j 減小了 1，力矩臂 (j+1) 也減小了 1，所以扭矩減少 w_i
+            jj -= w_i
+            
+        # 處理基線情況：單獨選擇當前物品 item (作為第一個物品，力臂為 1)
+        # 扭矩為 w_i * 1 = w_i
+        if w_i <= t:
+             dp[1][w_i] = max(dp[1][w_i], v_i)
+
+    # 計算最終答案：在所有有效狀態中找到最大價值
+    ans = 0
+    # i: 物品數量 (從 1 到 L)
+    for i in range(1, L + 1):
+        # j: 總扭矩 (從 0 到 t)
+        for j in range(t + 1):
+            ans = max(ans, dp[i][j])
+            
+    print(ans)
+
+# 執行主函數
+if __name__ == "__main__":
+    # 為了模擬 C++ 的 stdin/stdout 習慣，這裡假設您會將輸入以以下格式提供給程式：
+    # 
+    # n t L
+    # w1 v1
+    # w2 v2
+    # ...
+    # wn vn
+    #
+    # 示例輸入：
+    # 3 10 2  (n=3, t=10, L=2)
+    # 5 100
+    # 2 50
+    # 1 20
+    
+    # 程式碼會不斷讀取輸入直到 EOF (檔案結束)
+    # 如果您是在互動式環境中運行，可以手動輸入所有數據後按 Ctrl+D (Linux/macOS) 或 Ctrl+Z (Windows) 結束輸入。
+    solve()
