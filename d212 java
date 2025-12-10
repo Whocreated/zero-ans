@@ -1,0 +1,36 @@
+import java.util.Scanner;
+
+public class FibonacciSequencePrecalc {
+
+    private static final int MAX_N = 100;
+    
+    private static final long[] f = new long[MAX_N];
+
+    static {
+        if (MAX_N > 1) {
+            f[1] = 1;
+        }
+        if (MAX_N > 2) {
+            f[2] = 2;
+        }
+
+        for (int i = 3; i < MAX_N; i++) {
+            f[i] = f[i - 1] + f[i - 2];
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        while (scanner.hasNextInt()) {
+            int n = scanner.nextInt();
+            
+            if (n >= 1 && n < MAX_N) {
+                System.out.println(f[n]);
+            } else {
+            }
+        }
+        
+        scanner.close();
+    }
+}
