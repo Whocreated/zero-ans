@@ -1,0 +1,62 @@
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Scanner;
+
+public class TorqueKnapsackDP {
+
+    static class Item {
+        int w;
+        int v;
+
+        public Item(int w, int v) {
+            this.w = w;
+            this.v = v;
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        int n = scanner.nextInt();
+        int t = scanner.nextInt();
+        int l = scanner.nextInt();
+
+        Item[] items = new Item[n];
+        for (int i = 0; i < n; i++) {
+            items[i] = new Item(scanner.nextInt(), scanner.nextInt());
+        }
+        scanner.close();
+
+        Arrays.sort(items, Comparator.comparingInt((Item a) -> a.w).reversed());
+
+        int[][] dp = new int[l + 1][t + 1];
+
+        for (int i = 0; i < n; i++) {
+            Item currentItem = items[i];
+            
+            for (int j = l - 1; j >= 1; j--) {
+                
+                int currentTorqueForSlotL = currentItem.w * l;
+                
+                for (int slot_prev = l - 1; slot_prev >= 1; slot_prev--) {
+                    int slot_new = slot_prev + 1;
+                    
+                    int torqueAdded = currentItem.w * slot_new;
+
+                    if (torqueAdded > t) continue;
+                    
+                    for (int k_prev_torque = t - torqueAdded; k_prev_torque >= 0; k_prev_torque--) {
+                        if (dp[slot_prev][k_prev_torque] > 0) {
+                            int k_new_torque = k_prev_torque + torqueAdded;
+                            
+                            dp[slot_new][k_new_torque] = Math.max(
+                                dp[slot_new][k_new_torque],
+                                dp[slot_prev][k_prev_torque] + currentItem.v
+                            );
+                        }
+                    }
+                }
+            }
+            
+            if (currentItem.w <= t) {
+                dp[1][currentItem.w] = Math.max(dp[1][currentItem.w], currentItem.v
