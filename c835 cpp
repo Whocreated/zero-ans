@@ -1,19 +1,85 @@
 #include <bits/stdc++.h>
 using namespace std;
- 
-int n;
- 
+using lld = int64_t;
+const int N = 1000000 + 5;
+const int INF = 1 << 30;
+
+// 離散化
+struct Z3{
+    private:
+        vector< int > vv;
+    public:
+        void init() { vv.clear(); }
+        void insert( int x ) { vv.push_back( x ); }
+        void done() {
+            sort( vv.begin(), vv.end() );
+            vv.resize( distance( vv.begin(), unique( vv.begin(), vv.end() ) ) );
+        }
+        int sz() const { return static_cast< int >( vv.size() ); }
+        int get( int x ) const {
+            return static_cast< int >( distance( vv.begin(), lower_bound( vv.begin(), vv.end(), x ) ) );
+        }
+        int inv_get( int x ) const { return vv[ x ]; }
+} z3;
+
+pair< int, lld > arr[ N ];
+vector< lld > q1[ N ], q2[ N ];
+
 int main() {
-    cin >> n;
-    if (n <= 2500){
-        cout << 1 << " " << (n-1)/25+1 << " " << (n-1)%25+1 << "\n";
+    ios_base::sync_with_stdio( false );
+    cin.tie( nullptr );
+
+    int n, m; cin >> n >> m;
+
+    for ( int i = 0 ; i < n ; ++ i )
+        cin >> arr[ i ].first >> arr[ i ].second;
+
+    sort( arr, arr + n ); reverse( arr, arr + n );
+
+    for ( int i = 0 ; i < n ; ++ i )
+        z3.insert( arr[ i ].first );
+    z3.insert( m ); z3.done();
+
+    q1[ z3.get( m ) ].push_back( 0 );
+    for ( int i = 0 ; i < n ; ++ i )
+        q1[ z3.get( arr[ i ].first ) ].push_back( arr[ i ].second );
+
+    for ( int i = 0 ; i + 1 < z3.sz() ; ++ i ) {
+        if ( z3.inv_get( i ) == m ) break;
+        // 把大小為2^z3.inv_get( i )的物品排好序
+        vector< lld > cur;
+        cur.reserve( q1[ i ].size() + q2[ i ].size() );
+        size_t pt1 = 0, pt2 = 0;
+        while ( pt1 < q1[ i ].size() and pt2 < q2[ i ].size() ) {
+            if ( q1[ i ][ pt1 ] > q2[ i ][ pt2 ] )
+                cur.push_back( q1[ i ][ pt1 ++ ] );
+            else
+                cur.push_back( q2[ i ][ pt2 ++ ] );
+        }
+        while ( pt1 < q1[ i ].size() )
+            cur.push_back( q1[ i ][ pt1 ++ ] );
+        while ( pt2 < q2[ i ].size() )
+            cur.push_back( q2[ i ][ pt2 ++ ] );
+        // 兩個兩個合併(不過我們可以再偷懶一點直接跳到下一個有東西的大小，所以變成每2^lgp合併)
+        int lgp = z3.inv_get( i + 1 ) - z3.inv_get( i );
+        int bk = ( lgp <= 20 ? ( 1 << lgp ) : INF );
+        int curl = static_cast< int >( cur.size() );
+        for ( int _ = 0 ; _ < curl ; _ += bk ) {
+            lld v = 0;
+            for ( int j = 0 ; j < bk ; ++ j ) {
+                if ( _ + j == curl ) break;
+                v += cur[ _ + j ];
+            }
+            q2[ i + 1 ].push_back( v );
+        }
     }
-    else if (n <= 7500){
-        n -= 2500;
-        cout << 2 << " " << (n-1)/50+1 << " " << (n-1)%50+1 << "\n";
-    }
-    else{
-        n -= 7500;
-        cout << 3 << " " << (n-1)/25+1 << " " << (n-1)%25+1 << "\n";
-    }
+
+    lld ans = 0; int z3m = z3.get( m );
+    if ( not q1[ z3m ].empty() )
+        ans = max( ans, q1[ z3m ][ 0 ] );
+    if ( not q2[ z3m ].empty() )
+        ans = max( ans, q2[ z3m ][ 0 ] );
+
+    cout << ans << '\n';
+    return 0;
 }
