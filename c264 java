@@ -36,27 +36,37 @@ public class TorqueKnapsackDP {
             
             for (int j = l - 1; j >= 1; j--) {
                 
-                int currentTorqueForSlotL = currentItem.w * l;
-                
-                for (int slot_prev = l - 1; slot_prev >= 1; slot_prev--) {
-                    int slot_new = slot_prev + 1;
-                    
-                    int torqueAdded = currentItem.w * slot_new;
+                int torqueAdded = currentItem.w * (j + 1);
 
-                    if (torqueAdded > t) continue;
-                    
-                    for (int k_prev_torque = t - torqueAdded; k_prev_torque >= 0; k_prev_torque--) {
-                        if (dp[slot_prev][k_prev_torque] > 0) {
-                            int k_new_torque = k_prev_torque + torqueAdded;
-                            
-                            dp[slot_new][k_new_torque] = Math.max(
-                                dp[slot_new][k_new_torque],
-                                dp[slot_prev][k_prev_torque] + currentItem.v
-                            );
-                        }
+                if (torqueAdded > t) {
+                    continue;
+                }
+                
+                for (int k_prev_torque = t - torqueAdded; k_prev_torque >= 0; k_prev_torque--) {
+                    if (dp[j][k_prev_torque] > 0) {
+                        int k_new_torque = k_prev_torque + torqueAdded;
+                        int j_new = j + 1;
+                        
+                        dp[j_new][k_new_torque] = Math.max(
+                            dp[j_new][k_new_torque],
+                            dp[j][k_prev_torque] + currentItem.v
+                        );
                     }
                 }
             }
             
             if (currentItem.w <= t) {
-                dp[1][currentItem.w] = Math.max(dp[1][currentItem.w], currentItem.v
+                dp[1][currentItem.w] = Math.max(dp[1][currentItem.w], currentItem.v);
+            }
+        }
+
+        int maxAns = 0;
+        for (int i = 1; i <= l; i++) {
+            for (int j = 0; j <= t; j++) {
+                maxAns = Math.max(maxAns, dp[i][j]);
+            }
+        }
+
+        System.out.println(maxAns);
+    }
+}
