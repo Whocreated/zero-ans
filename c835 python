@@ -1,0 +1,218 @@
+import sys
+from typing import List, Tuple, Dict
+import math
+
+# 設置遞歸深度上限以處理大量數據
+# sys.setrecursionlimit(2000000)
+
+# 使用 int 代替 lld (int64_t)，在 Python 中標準 int 就是大數，但這裡用於表示價值，
+# 根據 C++ 的 lld 應該對應 int 或 float（如果涉及除法，但此處是加法，故用 int 足夠）
+Value = int 
+WeightUnit = int # 單位重量 a 或 M
+
+# -----------------
+# 離散化類 (Z3)
+# -----------------
+class Discretizer:
+    """
+    用於離散化所有出現的單位重量 (a) 和背包容量 (M) 的類別。
+    """
+    def __init__(self):
+        self._values: List[WeightUnit] = []
+
+    def init(self):
+        """ 清空內部數據。 """
+        self._values.clear()
+
+    def insert(self, x: WeightUnit):
+        """ 插入一個需要離散化的值。 """
+        self._values.append(x)
+
+    def done(self):
+        """ 排序並去重，完成離散化準備。 """
+        self._values.sort()
+        # 去重 (Pythonic way using set conversion, then sort back)
+        unique_values = []
+        if self._values:
+            unique_values.append(self._values[0])
+            for i in range(1, len(self._values)):
+                if self._values[i] != self._values[i-1]:
+                    unique_values.append(self._values[i])
+        self._values = unique_values
+
+    def size(self) -> int:
+        """ 返回離散化後的值的數量。 """
+        return len(self._values)
+
+    def get(self, x: WeightUnit) -> int:
+        """ 獲取值 x 在離散化列表中的索引 (即離散化後的 ID)。"""
+        # 相當於 C++ 的 lower_bound
+        import bisect
+        return bisect.bisect_left(self._values, x)
+
+    def inv_get(self, idx: int) -> WeightUnit:
+        """ 通過索引獲取原始值。 """
+        return self._values[idx]
+
+# -----------------
+# 主程式邏輯
+# -----------------
+
+def main():
+    # 設置標準輸入，提高效率
+    input = sys.stdin.read
+    data = input().split()
+    
+    if not data:
+        return
+
+    # 讀取 N 和 M
+    try:
+        n = int(data[0])
+        m = int(data[1])
+    except IndexError:
+        return
+
+    arr: List[Tuple[WeightUnit, Value]] = []
+    
+    # 讀取物品數據 (a, b)
+    data_idx = 2
+    for _ in range(n):
+        try:
+            a = int(data[data_idx])
+            b = int(data[data_idx+1])
+            arr.append((a, b))
+            data_idx += 2
+        except IndexError:
+            # 數據讀取不完整，提前退出
+            break
+
+    # 1. 排序 (與 C++ 代碼一致：按單位重量降序排列)
+    # C++: sort( arr, arr + n ); reverse( arr, arr + n ); 
+    # 等價於按 arr[i].first 降序排序
+    arr.sort(key=lambda x: x[0], reverse=True)
+
+    # 2. 離散化
+    z3 = Discretizer()
+    z3.init()
+    for a, b in arr:
+        z3.insert(a)
+    z3.insert(m)
+    z3.done()
+    
+    # z3.size() 即為離散化後的組數
+    z_size = z3.size()
+
+    # 3. 初始化 Q1 和 Q2
+    # Q1[i]: 單位重量恰好為 z3.inv_get(i) 的物品的價值列表
+    # Q2[i]: 從上一組 (z3.inv_get(i-1)) 兩兩合併得到的價值列表
+    
+    # C++ 中是 array，這裡使用 list of lists
+    q1: List[List[Value]] = [[] for _ in range(z_size)]
+    q2: List[List[Value]] = [[] for _ in range(z_size)]
+
+    # 初始化 Q1
+    m_z3_idx = z3.get(m)
+    # C++: q1[ z3.get( m ) ].push_back( 0 );
+    # 這是為了保證背包容量 M 這一組至少有一個 '0' 價值，用於後續計算
+    if m_z3_idx < z_size:
+        q1[m_z3_idx].append(0) 
+
+    # 將物品的價值分配到對應的離散化組
+    for a, b in arr:
+        z_idx = z3.get(a)
+        if z_idx < z_size:
+            q1[z_idx].append(b)
+
+    # 由於 C++ 代碼在排序後才放入 Q1，且 q1 內的元素沒有排序，
+    # 為了保持與 C++ 相同的合併邏輯 (從最大價值開始取)，這裡需要將 q1 內的價值降序排序。
+    # 雖然 C++ 代碼沒有顯式排序 Q1，但由於物品整體是按重量降序，且合併邏輯假設高價值優先，
+    # 這裡必須確保 q1 內是降序，以實現貪心合併。
+    for i in range(z_size):
+        q1[i].sort(reverse=True)
+    
+    # 4. 核心合併迴圈 (類似分治/優化 DP)
+    # 邏輯：將當前組的物品 (Q1[i]) 和從上一組合併的「虛擬物品」(Q2[i]) 進行合併，
+    #       並將結果的兩兩合併值存入下一組 Q2[i+1]。
+    
+    # 
+
+    for i in range(z_size - 1):
+        if z3.inv_get(i) == m:
+            break
+            
+        # 步驟 4.1：合併 q1[i] 和 q2[i] 得到 cur (價值降序)
+        cur: List[Value] = []
+        pt1, pt2 = 0, 0
+        q1_i_size = len(q1[i])
+        q2_i_size = len(q2[i])
+
+        # 使用 Merge Sort 的方式合併兩個已排序的列表
+        while pt1 < q1_i_size and pt2 < q2_i_size:
+            if q1[i][pt1] > q2[i][pt2]:
+                cur.append(q1[i][pt1])
+                pt1 += 1
+            else:
+                cur.append(q2[i][pt2])
+                pt2 += 1
+        
+        # 處理剩餘部分
+        cur.extend(q1[i][pt1:])
+        cur.extend(q2[i][pt2:])
+        
+        # 步驟 4.2：計算合併步長 (bk)
+        # 這是優化的核心：將當前單位重量 (2^a) 的物品，合併成下一組單位重量 (2^a') 的「虛擬物品」。
+        # lgp = a' - a。則需要 2^lgp 個當前組的物品才能合成一個下一組的虛擬物品。
+        
+        a_cur = z3.inv_get(i)
+        a_next = z3.inv_get(i + 1)
+        lgp = a_next - a_cur
+        
+        # bk = 2^lgp。最大不超過 2^20 (因為 M <= 20)
+        INF = 1 << 30 # 使用一個較大的數代替 INF
+        bk = (1 << lgp) if lgp <= 20 else INF 
+        
+        # 步驟 4.3：兩兩合併 (或每 bk 個合併)
+        # 每 bk 個最高價值的物品合併為一個新價值，存入下一組 q2[i+1]
+        curl = len(cur)
+        _ = 0
+        while _ < curl:
+            v: Value = 0
+            # 累積 bk 個物品的總價值
+            for j in range(bk):
+                if _ + j == curl:
+                    break
+                v += cur[_ + j]
+            
+            # 將合併後的價值存入下一組的 q2
+            q2[i + 1].append(v)
+            _ += bk
+
+    # 5. 輸出最終結果
+    ans: Value = 0
+    
+    # 最終答案位於單位容量 M 所在的組 (m_z3_idx)
+    if m_z3_idx < z_size:
+        # 考慮 Q1 中的物品（通常只有那個初始化時放進去的 0 價值）
+        if q1[m_z3_idx]:
+            # 由於 q1[m_z3_idx] 已經排序，取第一個就是最大值
+            ans = max(ans, q1[m_z3_idx][0]) 
+            
+        # 考慮 Q2 中合併來的「虛擬物品」
+        if q2[m_z3_idx]:
+            # Q2 中的價值是合併而來，但由於上一步是從 Q1, Q2 合併降序的 cur 中選取，
+            # 這裡的 q2[m_z3_idx] 理論上也會大致保持降序，但因為只需要最大值，
+            # 我們直接取 max 確保
+            ans = max(ans, max(q2[m_z3_idx]))
+
+    print(ans)
+
+# 執行主程式
+if __name__ == '__main__':
+    # 由於輸入數據量可能很大 (N=10^5)，確保使用 stdin.read() 一次性讀取
+    try:
+        main()
+    except Exception as e:
+        # 確保在競爭環境下能處理異常，例如 EOF
+        # print(f"An error occurred: {e}", file=sys.stderr)
+        pass
