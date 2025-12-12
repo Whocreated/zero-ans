@@ -1,0 +1,97 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// 儲存重量和價值的結構
+struct Item {
+    long long weight;
+    long long value;
+};
+
+// 產生所有組合的遞歸函數
+void generate_combinations(const vector<Item>& items, int start, int end, vector<pair<long long, long long>>& combinations, long long max_k) {
+    int n = end - start;
+    for (int i = 0; i < (1 << n); ++i) {
+        long long current_weight = 0;
+        long long current_value = 0;
+        for (int j = 0; j < n; ++j) {
+            if ((i >> j) & 1) {
+                current_weight += items[start + j].weight;
+                current_value += items[start + j].value;
+            }
+        }
+        if (current_weight <= max_k) {
+            combinations.push_back({current_weight, current_value});
+        }
+    }
+}
+
+void solve() {
+    long long N, K;
+    if (!(cin >> N >> K)) return;
+
+    vector<Item> valid_items;
+    long long max_x = (long long)sqrt(K);
+    long long limit = min(N, max_x);
+
+    for (long long X = 1; X <= limit; ++X) {
+        valid_items.push_back({X * X, X});
+    }
+
+    int U = valid_items.size();
+    if (U == 0) {
+        cout << 0 << "\n";
+        return;
+    }
+
+    // 將物品分為兩半
+    int mid = U / 2;
+    vector<pair<long long, long long>> left_sums, right_sums;
+
+    generate_combinations(valid_items, 0, mid, left_sums, K);
+    generate_combinations(valid_items, mid, U, right_sums, K);
+
+    // 優化 left_sums：對於相同重量，只保留最大價值
+    sort(left_sums.begin(), left_sums.end());
+    vector<pair<long long, long long>> unique_left;
+    long long max_val = 0;
+    for (auto p : left_sums) {
+        if (p.second > max_val) {
+            unique_left.push_back(p);
+            max_val = p.second;
+        }
+    }
+    left_sums = unique_left;
+
+    long long max_candies = 0;
+
+    // 合併兩半結果
+    for (auto p_right : right_sums) {
+        long long remaining_capacity = K - p_right.first;
+        // 使用二分搜尋找到 left_sums 中滿足剩餘容量的最大價值組合
+        auto it = upper_bound(left_sums.begin(), left_sums.end(), make_pair(remaining_capacity, 2000000000LL)); // 使用一個足夠大的價值上限
+        
+        if (it != left_sums.begin()) {
+            // 前一個元素就是滿足條件的最大重量組合
+            auto best_left = *(--it); 
+            max_candies = max(max_candies, p_right.second + best_left.second);
+        } else {
+            // 如果沒有 left_sums 組合滿足條件（除了 0,0 組合）
+            max_candies = max(max_candies, p_right.second);
+        }
+    }
+    
+    cout << max_candies << "\n";
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int T;
+    cin >> T;
+    while (T--) {
+        solve();
+    }
+
+    return 0;
+}
