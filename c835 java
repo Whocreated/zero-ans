@@ -1,0 +1,222 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.stream.Collectors;
+
+/**
+ * 解決 0/1 背包問題的優化版本，適用於重量和容量為 2 的冪次方 (2^a, 2^M) 的情況。
+ * 核心策略：離散化 + 價值合併（貪心分治 DP）。
+ */
+public class OptimizedKnapsack {
+
+    // 使用 long 代替 C++ 的 lld (int64_t) 來表示價值
+    private static final long INF_VALUE = 0;
+    // 設置一個較大的步長上限，防止 1 << lgp 溢出 int 範圍
+    private static final int INF_BK = 1 << 30; 
+
+    /**
+     * 物品結構：單位重量 a 和價值 b
+     */
+    static class Item {
+        int weightUnit; // 單位重量 a (實際重量 2^a)
+        long value;     // 價值 b
+
+        public Item(int a, long b) {
+            this.weightUnit = a;
+            this.value = b;
+        }
+    }
+
+    /**
+     * 離散化類 (對應 C++ 中的 Z3)
+     */
+    static class Discretizer {
+        private List<Integer> values;
+
+        public Discretizer() {
+            values = new ArrayList<>();
+        }
+
+        public void init() {
+            values.clear();
+        }
+
+        public void insert(int x) {
+            values.add(x);
+        }
+
+        public void done() {
+            // 排序
+            Collections.sort(values);
+            // 去重
+            values = values.stream().distinct().collect(Collectors.toList());
+        }
+
+        public int size() {
+            return values.size();
+        }
+
+        // 獲取值 x 在離散化列表中的索引 (使用二分搜索/lower_bound)
+        public int get(int x) {
+            int idx = Collections.binarySearch(values, x);
+            if (idx < 0) {
+                // binarySearch 返回 -(insertion point) - 1
+                return -idx - 1; 
+            }
+            return idx;
+        }
+
+        // 通過索引獲取原始值
+        public int invGet(int idx) {
+            return values.get(idx);
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        // 讀取輸入
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
+        // 讀取 N 和 M
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken()); // 物品數量
+        int m = Integer.parseInt(st.nextToken()); // 背包容量 2^M
+
+        Item[] arr = new Item[n];
+        for (int i = 0; i < n; ++i) {
+            // 由於 N 最大可達 10^5，需要考慮多行讀取
+            String line = br.readLine();
+            if (line == null || line.isEmpty()) break; 
+            st = new StringTokenizer(line);
+            
+            int a = Integer.parseInt(st.nextToken());
+            long b = Long.parseLong(st.nextToken());
+            arr[i] = new Item(a, b);
+        }
+        
+        // 1. 排序 (按單位重量降序排列)
+        Arrays.sort(arr, Comparator.comparingInt((Item item) -> item.weightUnit).reversed());
+
+        // 2. 離散化
+        Discretizer z3 = new Discretizer();
+        for (Item item : arr) {
+            z3.insert(item.weightUnit);
+        }
+        z3.insert(m); // 將背包容量 M 也加入離散化列表
+        z3.done();
+
+        int zSize = z3.size();
+
+        // 3. 初始化 Q1 和 Q2
+        // Q1[i]: 單位重量恰好為 z3.invGet(i) 的物品的價值列表
+        // Q2[i]: 從前一組合併而來的「虛擬物品」的價值列表
+        @SuppressWarnings("unchecked")
+        List<Long>[] q1 = new List[zSize];
+        @SuppressWarnings("unchecked")
+        List<Long>[] q2 = new List[zSize];
+        
+        for (int i = 0; i < zSize; ++i) {
+            q1[i] = new ArrayList<>();
+            q2[i] = new ArrayList<>();
+        }
+
+        // 初始化 Q1
+        int mZ3Idx = z3.get(m);
+        if (mZ3Idx < zSize) {
+            // 在容量 M 處放入 0，用於確保最後能計算出 max(q1[M], q2[M])
+            q1[mZ3Idx].add(0L); 
+        }
+
+        for (Item item : arr) {
+            int zIdx = z3.get(item.weightUnit);
+            if (zIdx < zSize) {
+                q1[zIdx].add(item.value);
+            }
+        }
+        
+        // 確保 Q1 內的價值列表是降序的，這是貪心合併的前提
+        for (int i = 0; i < zSize; ++i) {
+            q1[i].sort(Collections.reverseOrder());
+        }
+
+        // 4. 核心合併迴圈
+        for (int i = 0; i < zSize - 1; ++i) {
+            if (z3.invGet(i) == m) break; // 若單位重量已達到 M，則結束
+
+            // 步驟 4.1：合併 q1[i] 和 q2[i] 得到 cur (價值降序)
+            // *** 修正: 確保 cur 為 ArrayList 才能呼叫 ensureCapacity ***
+            ArrayList<Long> cur = new ArrayList<>(); 
+            cur.ensureCapacity(q1[i].size() + q2[i].size()); 
+            
+            int pt1 = 0, pt2 = 0;
+            int q1Size = q1[i].size();
+            int q2Size = q2[i].size();
+
+            // 歸併排序邏輯，將價值最大的元素優先放入 cur
+            while (pt1 < q1Size && pt2 < q2Size) {
+                if (q1[i].get(pt1) > q2[i].get(pt2)) {
+                    cur.add(q1[i].get(pt1++));
+                } else {
+                    cur.add(q2[i].get(pt2++));
+                }
+            }
+            
+            // 處理剩餘部分
+            while (pt1 < q1Size) cur.add(q1[i].get(pt1++));
+            while (pt2 < q2Size) cur.add(q2[i].get(pt2++));
+            
+            // 步驟 4.2：計算合併步長 (bk)
+            int aCur = z3.invGet(i);
+            int aNext = z3.invGet(i + 1);
+            int lgp = aNext - aCur; // 單位重量的差異 (log_2(下一組重量/當前組重量))
+
+            int bk;
+            if (lgp <= 30) { 
+                bk = 1 << lgp; 
+            } else {
+                // 如果差異過大，步長視為無限大 (即只取所有物品的總和作為一個虛擬物品)
+                bk = INF_BK;
+            } 
+            
+            // 步驟 4.3：每 bk 個合併
+            int curLen = cur.size();
+            for (int k = 0; k < curLen; k += bk) {
+                long v = 0;
+                // 累積 bk 個物品的總價值
+                for (int j = 0; j < bk; ++j) {
+                    if (k + j >= curLen) break;
+                    v += cur.get(k + j);
+                }
+                
+                // 將合併後的價值存入下一組的 q2
+                q2[i + 1].add(v);
+            }
+        }
+
+        // 5. 輸出最終結果
+        long ans = 0;
+        
+        if (mZ3Idx < zSize) {
+            // 考慮 Q1 中的物品（通常只有初始化時放進去的 0 價值）
+            if (!q1[mZ3Idx].isEmpty()) {
+                // Q1 內已經降序，第一個就是最大值
+                ans = Math.max(ans, q1[mZ3Idx].get(0)); 
+            }
+            
+            // 考慮 Q2 中合併來的「虛擬物品」
+            if (!q2[mZ3Idx].isEmpty()) {
+                // 找到 Q2 中的最大值
+                for (long val : q2[mZ3Idx]) {
+                    ans = Math.max(ans, val);
+                }
+            }
+        }
+
+        System.out.println(ans);
+    }
+}
