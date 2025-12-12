@@ -1,0 +1,13 @@
+def f(n):
+    if n<101:
+        return f(f(n+11))
+    elif n>=101:
+        return n-10
+while True:
+    try:
+        n=int(input())
+        if n==0:
+            break
+        print('f91(',(n),')',' = ',f(n),sep='')
+    except:
+        break
