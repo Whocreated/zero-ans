@@ -1,0 +1,71 @@
+import java.util.*;
+
+public class AllLCS {
+    static final int maxL = 40;
+    static Set<String>[][] sol = new HashSet[maxL][maxL];
+    static int[][] dp = new int[maxL][maxL];
+    static int[][] used = new int[maxL][maxL];
+    static String a, b;
+    static int n, m, u;
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
+        
+        int T = sc.nextInt();
+        for (u = 1; u <= T; u++) {
+            a = sc.next();
+            b = sc.next();
+            n = a.length();
+            m = b.length();
+
+            for (int i = 0; i < maxL; i++) {
+                for (int j = 0; j < maxL; j++) {
+                    sol[i][j] = new HashSet<>();
+                }
+            }
+
+            lcs(0, 0);
+
+            List<String> result = new ArrayList<>(sol[0][0]);
+            Collections.sort(result);
+
+            System.out.println("Case #" + u + ": " + result.size());
+            for (String s : result) {
+                System.out.println(s);
+            }
+        }
+        sc.close();
+    }
+
+    static int lcs(int i, int j) {
+        if (used[i][j] < u) {
+            used[i][j] = u;
+            
+            if (i == n || j == m) {
+                dp[i][j] = 0;
+                sol[i][j].add("");
+            } 
+            else if (a.charAt(i) == b.charAt(j)) {
+                dp[i][j] = lcs(i + 1, j + 1) + 1;
+                for (String x : sol[i + 1][j + 1]) {
+                    sol[i][j].add(a.charAt(i) + x);
+                }
+            } 
+            else {
+                int xVal = lcs(i + 1, j);
+                int yVal = lcs(i, j + 1);
+                
+                if (xVal >= yVal) {
+                    dp[i][j] = xVal;
+                    sol[i][j].addAll(sol[i + 1][j]);
+                }
+                if (yVal >= xVal) {
+                    dp[i][j] = yVal;
+                    sol[i][j].addAll(sol[i][j + 1]);
+                }
+            }
+        }
+        return dp[i][j];
+    }
+}
