@@ -1,0 +1,74 @@
+import sys
+
+# 增加遞迴深度限制（雖然 40x40 規模通常不需要，但這是一個好習慣）
+sys.setrecursionlimit(2000)
+
+def solve():
+    # 使用 sys.stdin 快速讀取所有輸入
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    t_cases = int(input_data[0])
+    current_idx = 1
+    
+    for case_num in range(1, t_cases + 1):
+        if current_idx >= len(input_data):
+            break
+            
+        a = input_data[current_idx]
+        b = input_data[current_idx + 1]
+        current_idx += 2
+        
+        n, m = len(a), len(b)
+        
+        # memo 用於儲存 (i, j) 對應的 (LCS長度, LCS字串集合)
+        memo = {}
+
+        def get_lcs(i, j):
+            # 基礎情況：其中一個字串已經到底了
+            if i == n or j == m:
+                return 0, {""}
+            
+            if (i, j) in memo:
+                return memo[(i, j)]
+            
+            res_len = 0
+            res_set = set()
+            
+            if a[i] == b[j]:
+                # 字元相同，長度 +1，並將當前字元加到子問題的所有結果前面
+                sub_len, sub_set = get_lcs(i + 1, j + 1)
+                res_len = sub_len + 1
+                for s in sub_set:
+                    res_set.add(a[i] + s)
+            else:
+                # 字元不同，分別嘗試跳過 a[i] 或跳過 b[j]
+                len1, set1 = get_lcs(i + 1, j)
+                len2, set2 = get_lcs(i, j + 1)
+                
+                if len1 > len2:
+                    res_len, res_set = len1, set1.copy()
+                elif len2 > len1:
+                    res_len, res_set = len2, set2.copy()
+                else:
+                    # 如果長度相等，合併兩個集合（這就是獲取所有不重複 LCS 的關鍵）
+                    res_len = len1
+                    res_set = set1.union(set2)
+            
+            memo[(i, j)] = (res_len, res_set)
+            return res_len, res_set
+
+        # 執行計算
+        total_len, results = get_lcs(0, 0)
+        
+        # 排序結果
+        sorted_results = sorted(list(results))
+        
+        # 輸出結果
+        print(f"Case #{case_num}: {len(sorted_results)}")
+        for lcs_str in sorted_results:
+            print(lcs_str)
+
+if __name__ == "__main__":
+    solve()
