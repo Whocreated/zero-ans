@@ -1,0 +1,35 @@
+import java.util.*;
+import java.io.*;
+
+public class SetIntersectionCounter {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+
+        for (int i = 0; i < n; i++) {
+            int[] firstList = new int[m];
+            st = new StringTokenizer(br.readLine());
+            for (int k = 0; k < m; k++) {
+                firstList[k] = Integer.parseInt(st.nextToken());
+            }
+
+            HashSet<Integer> secondSet = new HashSet<>();
+            st = new StringTokenizer(br.readLine());
+            for (int k = 0; k < m; k++) {
+                secondSet.add(Integer.parseInt(st.nextToken()));
+            }
+
+            int sameCount = 0;
+            for (int val : firstList) {
+                if (secondSet.contains(val)) {
+                    sameCount++;
+                }
+            }
+
+            System.out.println(sameCount);
+        }
+    }
+}
