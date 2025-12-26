@@ -1,41 +1,35 @@
-#include <bits/stdc++.h>
+#include <bits/stdc++>
 using namespace std;
 
-#define int long long
-
-int n, m;
-
-bool valid(int i, int j){
-	return i>=0 and i<n and j>=0 and j<n;
-}
-
-signed main(){
-	
-	ios::sync_with_stdio(false);
-	cin.tie(0); cout.tie(0);
-	
-	int t; cin>>t;
-	while(t--){
-		cin>>n>>m;
-		vector<vector<int>> matrix(n, vector<int>(n, 0));
-		int i(0), j(0), cnt(1);
-		matrix[i][j]=cnt;
-		while(cnt<n*n){
-			while(valid(i, j+1) and matrix[i][j+1]==0) matrix[i][++j]=++cnt;
-			while(valid(i+1, j) and matrix[i+1][j]==0) matrix[++i][j]=++cnt;
-			while(valid(i, j-1) and matrix[i][j-1]==0) matrix[i][--j]=++cnt;
-			while(valid(i-1, j) and matrix[i-1][j]==0) matrix[--i][j]=++cnt;
-		}
-		if(m==2)
-			for(int i=0; i<n-1; i++) 
-				for(int j=i+1; j<n; j++) 
-					swap(matrix[i][j], matrix[j][i]);
-		for(auto arr : matrix){
-			for(auto val : arr) cout<<val<<setw(6); 
-			cout<<'\n';
-		}
-		cout<<'\n';
-	}
-	
-	return 0;
+int main() {
+    short T, N, M, num;
+    short mat[100][100];
+    scanf("%hd", &T);
+    while (T--) {
+        scanf("%hd%hd", &N, &M);
+        num = 1;
+        if (N & 1)
+            mat[N / 2][N / 2] = N * N;
+        for (short cth = 0, edge = N - 1; edge > 0; ++cth, edge -= 2) {
+            short i = cth, j = cth;
+            for (short e = 0; e < edge; ++e, ++j)
+                mat[i][j] = (num++);
+            for (short e = 0; e < edge; ++e, ++i)
+                mat[i][j] = (num++);
+            for (short e = 0; e < edge; ++e, --j)
+                mat[i][j] = (num++);
+            for (short e = 0; e < edge; ++e, --i)
+                mat[i][j] = (num++);
+        }
+        for (short i = 0; i < N; ++i) {
+            for (short j = 0; j < N; ++j)
+                if (M == 1)
+                    printf("%5hd", mat[i][j]);
+                else
+                    printf("%5hd", mat[j][i]);
+            putchar('\n');
+        }
+        putchar('\n');
+    }
+    return 0;
 }
