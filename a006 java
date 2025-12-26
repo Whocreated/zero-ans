@@ -1,0 +1,37 @@
+import java.util.Scanner;
+
+public class QuadraticEquationSolver {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        if (!scanner.hasNextInt()) return;
+        int a = scanner.nextInt();
+        int b = scanner.nextInt();
+        int c = scanner.nextInt();
+
+        if (a != 0) {
+            int d = b * b - 4 * a * c;
+
+            if (d > 0) {
+                double x1 = (-b + Math.sqrt(d)) / (2.0 * a);
+                double x2 = (-b - Math.sqrt(d)) / (2.0 * a);
+
+                if (x1 > x2) {
+                    System.out.printf("Two different roots x1=%.0f , x2=%.0f\n", x1, x2);
+                } else {
+                    System.out.printf("Two different roots x1=%.0f , x2=%.0f\n", x2, x1);
+                }
+            } else if (d == 0) {
+                double x = (-b + Math.sqrt(d)) / (2.0 * a);
+                System.out.printf("Two same roots x=%.0f\n", x);
+            } else {
+                System.out.println("No real root");
+            }
+        } else {
+            System.out.println("No real root");
+        }
+
+        scanner.close();
+    }
+}
