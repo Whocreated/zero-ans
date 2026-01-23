@@ -1,0 +1,11 @@
+n = int(input()); location = []; distance = []
+
+for i in range(n):
+    a, b = map(int, input().split())
+    location.append((a, b))
+for i in range(n-1):
+    x1, y1 = location[i]; x2, y2 = location[i+1]
+    dis = abs(x1 - x2) + abs(y1 - y2)
+    distance.append(dis)
+
+print(max(distance), min(distance))
