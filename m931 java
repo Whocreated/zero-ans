@@ -1,0 +1,43 @@
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class CharacterPowerSort {
+    
+    static class C {
+        int atk;
+        int def;
+
+        public C(int atk, int def) {
+            this.atk = atk;
+            this.def = def;
+        }
+
+        public long power() {
+            return (long) atk * atk + (long) def * def;
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        if (!sc.hasNextInt()) return;
+        int n = sc.nextInt();
+
+        C[] p = new C[n];
+        for (int i = 0; i < n; i++) {
+            int atk = sc.nextInt();
+            int def = sc.nextInt();
+            p[i] = new C(atk, def);
+        }
+
+        Arrays.sort(p, (a, b) -> Long.compare(b.power(), a.power()));
+
+        if (n >= 2) {
+            System.out.println(p[1].atk + " " + p[1].def);
+        } else if (n == 1) {
+            System.out.println(p[0].atk + " " + p[0].def);
+        }
+
+        sc.close();
+    }
+}
