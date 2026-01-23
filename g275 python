@@ -1,0 +1,22 @@
+n=int(input())
+P=[]
+for i in range(n):
+  m=list(map(int,input().split()))#first line
+  o=list(map(int,input().split()))#second line
+  Q=[]
+  if m[1]==m[3] or m[1]!=m[5] or o[1]==o[3] or o[1]!=o[5]:
+    Q.append("A")
+  if m[6]==1 and o[6]==0:
+    pass
+  else:
+    Q.append("B")
+  if m[1]==o[1] or m[3]==o[3] or m[5]==o[5]:
+    Q.append("C")
+  Q.append('\n')
+  if len(Q)==1:
+    P.append("None\n")
+  else:
+    for x in Q:
+      P.append(x)
+for j in P:
+  print(j,end="")
