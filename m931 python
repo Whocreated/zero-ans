@@ -1,0 +1,20 @@
+list_a = []   #攻擊力
+list_d = []   #防禦力
+list_ad = []  #能力值
+
+n = int(input())
+
+for i in range(n):
+    A = list(map(int, input().split()))
+    list_a.append(A[0]) 
+    list_d.append(A[1])   
+    list_ad.append(A[0]**2 + A[1]**2)  
+
+
+max_1 = list_ad.index(max(list_ad))   #找最大值
+list_a.pop(max_1)  #移掉最大值
+list_d.pop(max_1)
+list_ad.pop(max_1)
+
+max_2 = list_ad.index(max(list_ad))   #找次大
+print(list_a[max_2],list_d[max_2])
