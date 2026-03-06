@@ -1,0 +1,23 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+    int main(){
+    int n; //n個商品
+    int d; //d為判定條件的閾值
+    int rec[3]={0};  //紀錄三個評分
+    int tol=0; //tol為總分
+    int cou=0; //cou為符合條件的商品數量
+    cin>>n; //輸入商品數量
+    cin>>d; //輸入判定條件的閾值
+    for (int a=0;a<n;a++){ //對每個商品進行評分
+        for (int b=0;b<3;b++){
+            cin>>rec[b];
+            }
+            sort(rec,rec+3);
+            if (rec[2]-rec[0]>=d){
+                cou+=1;
+                tol+=(rec[0]+rec[1]+rec[2])/3;
+        }
+    }
+    cout<<cou<<' '<<tol;
+}
