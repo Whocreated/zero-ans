@@ -1,21 +1,20 @@
-
 #include <bits/stdc++.h>
 using namespace std;
 
 
-char ans[25][25];
+char ans[25][25]; 
 
 
 int main(){
 
 
     ios_base::sync_with_stdio(0);     //加速cin
-    cin.tie(0);                                   //加速cin
+    cin.tie(0);                       //加速cin
 
 
-    int k, q, r;
-    cin >> k >> q >> r;
-    cin >> ans[0];
+    int k, q, r; //k為字串長度，q為修理次數，r為輸出行數
+    cin >> k >> q >> r; //輸入k、q、r
+    cin >> ans[0]; //輸入初始字串
 
 
     for(int i = 0; i < q; i++){
@@ -32,7 +31,4 @@ int main(){
         }
         cout << '\n';
     }
-
-
-    return 0;
 }
