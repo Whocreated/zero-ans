@@ -1,0 +1,40 @@
+import java.util.Scanner;
+
+public class ScoringSystem {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        // 讀取總提交次數 n
+        if (!sc.hasNextInt()) return;
+        int n = sc.nextInt();
+
+        int maxScore = -1;  // 紀錄目前最高分
+        int maxTime = 0;    // 紀錄第一次拿到最高分的時間
+        int wrongCount = 0; // 紀錄分數為 -1 的次數
+
+        for (int i = 0; i < n; i++) {
+            int t = sc.nextInt(); // 讀取時間
+            int s = sc.nextInt(); // 讀取分數
+
+            // 規則 1：如果這次分數比之前紀錄的更高，更新最高分與時間
+            if (s > maxScore) {
+                maxScore = s;
+                maxTime = t;
+            }
+
+            // 規則 2：如果分數是 -1，代表嚴重錯誤，計數加一
+            if (s == -1) {
+                wrongCount++;
+            }
+        }
+
+        // 最終分數計算邏輯
+        // 公式：最高分 - 總次數 - (錯誤次數 * 2)，若小於 0 則取 0
+        int finalScore = Math.max(0, maxScore - n - (wrongCount * 2));
+
+        // 輸出結果：最終分數 第一次最高分的時間
+        System.out.println(finalScore + " " + maxTime);
+
+        sc.close();
+    }
+}
