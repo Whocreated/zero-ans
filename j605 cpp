@@ -1,0 +1,30 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int main() {
+    
+    int n; // 總提交次數
+    cin >> n;
+    
+    int max_score = -1; // 拿到的最高分數
+    int max_time; // 第一次拿到最高分數的時間
+    int wrong = 0; // 嚴重錯誤次數
+    
+    for(int i = 0; i < n; i++) {
+        int t, s;
+        cin >> t >> s; // 時間, 分數
+        if(s > max_score) { // 比之前更高分
+            // 更新
+            max_score = s;
+            max_time = t;
+        }
+        if(s == -1) { // 嚴重錯誤
+            wrong++;    
+        } 
+    }
+    
+    int score = max(0, max_score - n - wrong * 2);
+    cout << score << ' ' << max_time << '\n';
+    
+    return 0;
+}
