@@ -1,0 +1,100 @@
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+
+using namespace std;
+
+typedef long long ll;
+
+// 計算平方和 1^2 + 2^2 + ... + n^2
+// n 最大約 35000，n^3 大約 4*10^13，完全在 long long (9*10^18) 的安全範圍內，不會溢位！
+inline ll s2(ll n) {
+    if (n <= 0) return 0;
+    return n * (n + 1) * (2 * n + 1) / 6;
+}
+
+void solve() {
+    ll N, K;
+    cin >> N >> K;
+
+    // 1. 找出最大包數 m
+    ll m = 0;
+    ll low = 1, high = min(N, 40000LL);
+    while (low <= high) {
+        ll mid = low + (high - low) / 2;
+        if (s2(mid) <= K) {
+            m = mid;
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+
+    if (m == 0) {
+        cout << 0 << "\n";
+        return;
+    }
+
+    // 2. 尋找完美的連續區間 [B, B+m-1]，找出最大的起點 B
+    ll B = 1;
+    low = 1;
+    high = min(N - m + 1, 40000LL);
+    while (low <= high) {
+        ll mid = low + (high - low) / 2;
+        ll weight = s2(mid + m - 1) - s2(mid - 1);
+        if (weight <= K) {
+            B = mid;
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+
+    // 3. 套用「一洞理論」：嘗試使用 [B, B+m] 這個長度多 1 的區間，並拔掉一個數字 X
+    ll ans = 0;
+    if (B + m <= N) {
+        // 如果把 B 到 B+m 整個拿進來，總重量會是多少？
+        ll W_full = s2(B + m) - s2(B - 1);
+        
+        // 為了符合 K，我們必須拔掉一個平方值至少為 needed_drop_sq 的數字
+        ll needed_drop_sq = W_full - K;
+        
+        ll X = 0;
+        if (needed_drop_sq > 0) {
+            // 找最小的整數 X 使得 X^2 >= needed_drop_sq
+            // 這裡的 sqrt 只做初步估計，後面的 while 保證絕對的整數精確度
+            X = sqrt(needed_drop_sq);
+            while (X * X < needed_drop_sq) X++; 
+        }
+        
+        // 拔掉的數字不能小於區間下限 B
+        if (X < B) X = B;
+
+        if (X <= B + m) {
+            // 成功拔掉一個合法範圍內的數字 X
+            // 總和 = [B 到 B+m 的梯形面積總和] - 拔掉的 X
+            ll total_sum = (B + B + m) * (m + 1) / 2;
+            ans = total_sum - X;
+        } else {
+            // 理論上不會走到這，防呆機制：乖乖用原本的 [B, B+m-1]
+            ans = (B + B + m - 1) * m / 2;
+        }
+    } else {
+        // 如果 B+m 已經超過 N 限制，無法拉長區間，只能用原本的 [B, B+m-1]
+        ans = (B + B + m - 1) * m / 2;
+    }
+
+    cout << ans << "\n";
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    int T;
+    if (cin >> T) {
+        while (T--) {
+            solve();
+        }
+    }
+    return 0;
+}
