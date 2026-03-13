@@ -1,0 +1,54 @@
+#include<iostream>
+using namespace std;
+int main(){
+    int x,n,i,m,j,d,s=0,k,l,t=0;
+    cin>>n>>m;
+    int h[n][m];
+    for(i=0;i<n;i++)
+    {
+        for(j=0;j<m;j++)
+        {
+            cin>>h[i][j];
+        }
+    }
+    for(x=0;x<n*m;x++)    //作至少n*m次確保移除後會在匹配
+    {
+        for(i=0;i<n;i++)
+        {
+            for(j=0;j<m;j++)
+            {
+                d=h[i][j];
+                if(d==-1)   continue;    //該格式-1代表已移除，不用檢查
+                if(i>0)
+                {
+                    s=i-1;
+                    while(s>=0&h[s][j]==-1)    //向上找並跳過-1
+                    {
+                        s--;
+                    }
+                    if(h[s][j]==d)
+                    {
+                        t+=d;    //加入配對的數
+                        h[i][j]=h[s][j]=-1;    //把配對過的數字改成-1
+                        continue;    //找到後跳過本次迴圈
+                    }
+                }
+                if(j>0)    
+                {
+                    s=j-1;
+                    while(s>=0&h[i][s]==-1)    //向左找並跳過-1
+                    {
+                        s--;
+                    }
+                    if(h[i][s]==d)
+                    {
+                        t+=d;    //加入配對的數
+                        h[i][j]=h[i][s]=-1;    //把配對過的數字改成-1
+                        continue;    //找到後跳過本次迴圈
+                    }
+                }
+            }
+        }
+    }
+    cout<<t;
+}
