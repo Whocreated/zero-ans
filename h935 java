@@ -1,0 +1,84 @@
+import java.util.Scanner;
+
+public class MaximumSumWithSquareConstraint {
+
+    public static long s2(long n) {
+        if (n <= 0) return 0;
+        return n * (n + 1) * (2 * n + 1) / 6;
+    }
+
+    public static void solve(Scanner sc) {
+        if (!sc.hasNextLong()) return;
+        long nLimit = sc.nextLong();
+        long kLimit = sc.nextLong();
+
+        long m = 0;
+        long low = 1, high = Math.min(nLimit, 40000L);
+        while (low <= high) {
+            long mid = low + (high - low) / 2;
+            if (s2(mid) <= kLimit) {
+                m = mid;
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+
+        if (m == 0) {
+            System.out.println(0);
+            return;
+        }
+
+        long bStart = 1;
+        low = 1;
+        high = Math.min(nLimit - m + 1, 40000L);
+        while (low <= high) {
+            long mid = low + (high - low) / 2;
+            long weight = s2(mid + m - 1) - s2(mid - 1);
+            if (weight <= kLimit) {
+                bStart = mid;
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+
+        long ans = 0;
+        if (bStart + m <= nLimit) {
+            long wFull = s2(bStart + m) - s2(bStart - 1);
+            long neededDropSq = wFull - kLimit;
+
+            long xToDrop = 0;
+            if (neededDropSq > 0) {
+                xToDrop = (long) Math.sqrt(neededDropSq);
+                while (xToDrop * xToDrop < neededDropSq) {
+                    xToDrop++;
+                }
+            }
+
+            if (xToDrop < bStart) xToDrop = bStart;
+
+            if (xToDrop <= bStart + m) {
+                long totalSum = (bStart + (bStart + m)) * (m + 1) / 2;
+                ans = totalSum - xToDrop;
+            } else {
+                ans = (bStart + (bStart + m - 1)) * m / 2;
+            }
+        } else {
+            ans = (bStart + (bStart + m - 1)) * m / 2;
+        }
+
+        System.out.println(ans);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (sc.hasNextInt()) {
+            int t = sc.nextInt();
+            while (t-- > 0) {
+                solve(sc);
+            }
+        }
+        sc.close();
+    }
+}
