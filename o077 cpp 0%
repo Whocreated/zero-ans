@@ -10,7 +10,7 @@ int main() {
     if (h == 1) {
         while (n--) {
             cin >> r >> c >> t >> x;
-            for (inti = c; i < c + t && i < w; i++) {
+            for (int i = c; i < c + t && i < w; i++) {
                 a[i] += x;
 
             }
@@ -19,10 +19,10 @@ int main() {
                 a[i] += x;
             }
         }
-        for (inti = 0; i < w; i++) {
+        for (int i = 0; i < w; i++) {
             cout << a[i] << " ";
         }
-        cout << endl
+        cout << endl;
     }
 
 }
