@@ -1,0 +1,85 @@
+import sys
+import math
+
+# 計算 1^2 + 2^2 + ... + n^2
+def s2(n):
+    if n <= 0:
+        return 0
+    # 使用 // 確保整數除法
+    return n * (n + 1) * (2 * n + 1) // 6
+
+def solve():
+    # 讀取所有輸入並轉為迭代器，效率較高
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    it = iter(input_data)
+    t_cases = int(next(it))
+    
+    for _ in range(t_cases):
+        n_limit = int(next(it))
+        k_limit = int(next(it))
+        
+        # 1. 找出最大包數 m (二分搜尋)
+        m = 0
+        low, high = 1, min(n_limit, 40000)
+        while low <= high:
+            mid = (low + high) // 2
+            if s2(mid) <= k_limit:
+                m = mid
+                low = mid + 1
+            else:
+                high = mid - 1
+        
+        if m == 0:
+            print(0)
+            continue
+            
+        # 2. 尋找完美的連續區間 [B, B+m-1]，找出最大的起點 B
+        b_start = 1
+        low, high = 1, min(n_limit - m + 1, 40000)
+        while low <= high:
+            mid = (low + high) // 2
+            # 區間 [mid, mid+m-1] 的平方和
+            weight = s2(mid + m - 1) - s2(mid - 1)
+            if weight <= k_limit:
+                b_start = mid
+                low = mid + 1
+            else:
+                high = mid - 1
+                
+        # 3. 套用「一洞理論」
+        ans = 0
+        if b_start + m <= n_limit:
+            # 計算 [B, B+m] 的總平方和
+            w_full = s2(b_start + m) - s2(b_start - 1)
+            needed_drop_sq = w_full - k_limit
+            
+            x_val = 0
+            if needed_drop_sq > 0:
+                # 找最小的 X 使得 X^2 >= needed_drop_sq
+                # math.isqrt 是 Python 3.8+ 內建的整數平方根
+                x_val = math.isqrt(needed_drop_sq)
+                if x_val * x_val < needed_drop_sq:
+                    x_val += 1
+            
+            # 拔掉的數字不能小於區間下限 B
+            if x_val < b_start:
+                x_val = b_start
+                
+            if x_val <= b_start + m:
+                # 梯形公式計算 [B, B+m] 的總和，再減去 X
+                total_sum = (b_start + (b_start + m)) * (m + 1) // 2
+                ans = total_sum - x_val
+            else:
+                # 防呆：回退到 [B, B+m-1]
+                ans = (b_start + (b_start + m - 1)) * m // 2
+        else:
+            # 無法擴張區間，直接用 [B, B+m-1]
+            ans = (b_start + (b_start + m - 1)) * m // 2
+            
+        print(ans)
+
+if __name__ == "__main__":
+    solve()
