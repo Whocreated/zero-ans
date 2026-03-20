@@ -1,0 +1,64 @@
+import sys
+
+def solve():
+    # 讀取所有輸入
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    n = int(input_data[0])
+    m = int(input_data[1])
+    
+    # 建立二維陣列 (n x m)
+    grid = []
+    current = 2
+    for i in range(n):
+        grid.append([int(x) for x in input_data[current : current + m]])
+        current += m
+        
+    total_score = 0
+    
+    # 外層迴圈：確保多輪檢查，直到沒有東西可以消除為止
+    # 原代碼使用 n*m 次，這能保證所有連鎖反應都被處理
+    for _ in range(n * m):
+        changed = False
+        for i in range(n):
+            for j in range(m):
+                val = grid[i][j]
+                
+                # 如果已經是 -1，跳過
+                if val == -1:
+                    continue
+                
+                # 1. 向上找最近的非 -1 數字
+                up_idx = i - 1
+                while up_idx >= 0 and grid[up_idx][j] == -1:
+                    up_idx -= 1
+                
+                if up_idx >= 0 and grid[up_idx][j] == val:
+                    total_score += val
+                    grid[i][j] = -1
+                    grid[up_idx][j] = -1
+                    changed = True
+                    continue # 匹配成功後處理下一個格子
+                
+                # 2. 向左找最近的非 -1 數字
+                left_idx = j - 1
+                while left_idx >= 0 and grid[i][left_idx] == -1:
+                    left_idx -= 1
+                
+                if left_idx >= 0 and grid[i][left_idx] == val:
+                    total_score += val
+                    grid[i][j] = -1
+                    grid[i][left_idx] = -1
+                    changed = True
+                    continue
+        
+        # 優化：如果這整輪都沒有任何數字被消除，就可以提早結束
+        if not changed:
+            break
+            
+    print(total_score)
+
+if __name__ == "__main__":
+    solve()
