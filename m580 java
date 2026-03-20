@@ -1,0 +1,51 @@
+import java.util.Scanner;
+
+public class DiceSimulator {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        if (!sc.hasNextInt()) return;
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+
+        int[] u = new int[n + 1];
+        int[] f = new int[n + 1];
+        int[] r = new int[n + 1];
+        
+        int[] opposite = {0, 6, 5, 4, 3, 2, 1};
+
+        for (int i = 1; i <= n; i++) {
+            u[i] = 1;
+            f[i] = 4;
+            r[i] = 2;
+        }
+
+        for (int i = 0; i < m; i++) {
+            int a = sc.nextInt();
+            int b = sc.nextInt();
+
+            if (b == -1) {
+                int temp = f[a];
+                f[a] = u[a];
+                u[a] = opposite[temp];
+            } 
+            else if (b == -2) {
+                int temp = r[a];
+                r[a] = u[a];
+                u[a] = opposite[temp];
+            } 
+            else {
+                int tempU = u[a]; u[a] = u[b]; u[b] = tempU;
+                int tempF = f[a]; f[a] = f[b]; f[b] = tempF;
+                int tempR = r[a]; r[a] = r[b]; r[b] = tempR;
+            }
+        }
+
+        for (int i = 1; i <= n; i++) {
+            System.out.print(u[i] + (i == n ? "" : " "));
+        }
+        System.out.println();
+        
+        sc.close();
+    }
+}
