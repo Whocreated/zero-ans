@@ -1,0 +1,77 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n, m;
+    // 讀入人數 n 跟總共出了幾張牌 m
+    while (cin >> n >> m) {
+        int total = 0;       // 目前累計的分數
+        int now = 1;         // 現在是誰出牌 (從1號開始)
+        int step = 1;        // 出牌方向 (1是順時針，-1是逆時針)
+        int loser = -1;      // 紀錄誰爆掉的
+        bool is_end = false; // 遊戲是不是已經有人爆了
+
+        for (int i = 0; i < m; i++) {
+            string card;
+            cin >> card;
+
+            if (is_end) continue; // 如果有人爆了，後面的牌就不用管了
+
+            // --- 處理各種牌的功能 ---
+            if (card == "A") {
+                total = 0;
+            } else if (card == "K") {
+                total = 99;
+            } else if (card == "4") {
+                step *= -1; // 迴轉
+            } else if (card == "J") {
+                // Pass，啥都不用做，直接跳過看下一位
+            } else if (card == "10+") {
+                total += 10;
+            } else if (card == "10-") {
+                total = max(0, total - 10);
+            } else if (card == "Q+") {
+                total += 20;
+            } else if (card == "Q-") {
+                total = max(0, total - 20);
+            } else if (card[0] == '5') {
+                // 這裡最麻煩，要抓出 5(x) 括號裡的數字
+                int start = card.find('(') + 1;
+                int end = card.find(')');
+                int target = stoi(card.substr(start, end - start));
+                
+                // 檢查有沒有爆點 (雖然5不會加分，但養成檢查習慣)
+                if (total > 99) {
+                    loser = now;
+                    is_end = true;
+                }
+                // 關鍵：指定之後，下一個出牌的就是 target
+                if (!is_end) now = target;
+                continue; // 既然已經指定了，就跳過下面通用的移動邏輯
+            } else {
+                // 一般數字牌
+                total += stoi(card);
+            }
+
+            // --- 檢查爆點 ---
+            if (total > 99 && !is_end) {
+                loser = now;
+                is_end = true;
+            }
+
+            // --- 換下一個人 ---
+            if (!is_end) {
+                // 這裡用餘數來寫比較帥，+n 是為了防止 step 是 -1 時變成負數
+                now = (now + step + n - 1) % n + 1;
+            }
+        }
+
+        // 最後看是誰輸了，還是大家都沒爆
+        if (loser != -1) {
+            cout << loser << " cheated!" << endl;
+        } else {
+            cout << "The sum is " << total << endl;
+        }
+    }
+    return 0;
+}
