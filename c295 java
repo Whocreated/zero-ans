@@ -1,0 +1,46 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class MatrixMaxSum {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        if (!sc.hasNextInt()) return;
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+
+        List<Integer> rowMaxValues = new ArrayList<>();
+        int totalSum = 0;
+
+        for (int i = 0; i < n; i++) {
+            int currentMax = 0;
+            for (int j = 0; j < m; j++) {
+                int value = sc.nextInt();
+                currentMax = Math.max(currentMax, value);
+            }
+            rowMaxValues.add(currentMax);
+            totalSum += currentMax;
+        }
+
+        System.out.println(totalSum);
+
+        List<Integer> divisors = new ArrayList<>();
+        for (int maxVal : rowMaxValues) {
+            if (maxVal != 0 && totalSum % maxVal == 0) {
+                divisors.add(maxVal);
+            }
+        }
+
+        if (divisors.isEmpty()) {
+            System.out.print("-1");
+        } else {
+            for (int i = 0; i < divisors.size(); i++) {
+                System.out.print(divisors.get(i) + (i == divisors.size() - 1 ? "" : " "));
+            }
+        }
+        System.out.println();
+        
+        sc.close();
+    }
+}
