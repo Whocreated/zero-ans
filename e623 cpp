@@ -6,7 +6,6 @@ int main()
     cin>>a;
     int con=0;
     int tol=0;
-    int mh=0;
     while(a>tol)
     {
         con+=1;
