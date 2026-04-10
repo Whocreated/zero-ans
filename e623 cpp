@@ -1,0 +1,32 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main()
+{
+    int a;
+    cin>>a;
+    int con=0;
+    int tol=0;
+    int mh=0;
+    while(a>tol)
+    {
+        con+=1;
+        tol+=4*con;
+    }
+    tol-=4*con;
+    if(a-tol<=con)
+    {
+        cout<<"Pen";
+    }
+    if(a-tol>con&&a-tol<=2*con)
+    {
+        cout<<"Pineapple";
+    }
+    if(a-tol>2*con&&a-tol<=3*con)
+    {
+        cout<<"Apple";
+    }
+    if(a-tol>3*con&&a-tol<=4*con)
+    {
+        cout<<"Pineapple pen";
+    }
+}
