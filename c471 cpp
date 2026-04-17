@@ -1,0 +1,24 @@
+#include<bits/stdc++.h>
+#define int long long
+#define w first
+#define f second
+using namespace std;
+int n,ans=0;
+pair<int,int>arr[100000+10];
+bool cmp(pair<int,int> a,pair<int,int> b){
+    return a.w*b.f<b.w*a.f;
+}
+signed main(){
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cin>>n;
+    for(int i=0;i<n;i++)cin>>arr[i].w;
+    for(int i=0;i<n;i++)cin>>arr[i].f;
+    sort(arr,arr+n,cmp);
+    int cnt=arr[0].w;
+    for(int i=1;i<n;i++){
+        ans+=arr[i].f*cnt;
+        cnt+=arr[i].w;
+    }
+    cout<<ans;
+}
