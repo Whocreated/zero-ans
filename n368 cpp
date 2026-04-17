@@ -1,0 +1,44 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false); // 這一部分是優化輸入輸出的速度
+    cin.tie(0); 
+
+    int N;// 讀取總共有多少個 Pair，如果讀不到資料就結束程式
+    if (!(cin >> N)) return 0;
+
+    
+    vector<long long> weights;// 用來儲存每一組數對所能提供的「最大貢獻」
+    
+    for (int i = 0; i < N; ++i) {
+        long long a, b;
+        cin >> a >> b;
+        
+        // 邏輯：對於每一組 Pair (a, b)
+        //      我們有三種選擇：
+        //      1. 取 a
+        //      2. 取 b
+        //      3. 都不取 (視為取 0)
+        // 為了讓總和最大，我們一定選這三個選項中最大的那個。
+        // 0LL 代表 long long 型態的 0，確保 max 函數內的型態一致。
+        weights.push_back(max({a, b, 0LL}));
+    }
+
+    // 將所有計算出來的「貢獻值」由大到小排序 (Descending Order)
+    // weights.rbegin() 是「反向疊代器」的開頭，這樣 sort 出來就是從大到小
+    sort(weights.rbegin(), weights.rend());
+
+    long long current_sum = 0; // 用來記錄累加的總和，一定要用 long long 避免溢位
+    
+    // 根據題目要求，分別輸出挑選 1 到 N 個 Pair 時的最大總和
+    for (int i = 0; i < N; ++i) {
+        // 因為已經排序過，每次加上「剩餘價值中最大的一個」就是當前數量的最優解
+        current_sum += weights[i];
+        
+        // 輸出當前累加出的最大總和，並換行
+        cout << current_sum << "\n";
+    }
+
+    return 0;
+}
